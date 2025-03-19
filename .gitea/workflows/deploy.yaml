@@ -1,0 +1,24 @@
+name: Deploy Sharelatex Full
+run-name: ${{ gitea.actor }} is deploying ${{ vars.repository }}
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Login to Gitea Registry
+        run: echo "${{ secrets.REGISTRY_PAT }}" | docker login ${{ vars.URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+
+      - name: Build image
+        run: docker build -t ${{ vars.URL }}/${{ vars.repository }}:latest .
+
+      - name: Push image
+        run: docker push ${{ vars.URL }}/${{ vars.repository }}:latest
