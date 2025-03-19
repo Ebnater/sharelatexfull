@@ -18,7 +18,7 @@ jobs:
         run: echo "${{ secrets.REGISTRY_PAT }}" | docker login ${{ vars.URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
 
       - name: Build image
-        run: docker build -t ${{ vars.URL }}/${{ vars.repository }}:latest .
+        run: docker build -t ${{ vars.URL }}/${{ vars.repository }}:5.3.2 .
 
       - name: Push image
-        run: docker push ${{ vars.URL }}/${{ vars.repository }}:latest
+        run: docker push ${{ vars.URL }}/${{ vars.repository }}:5.3.2
