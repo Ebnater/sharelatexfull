@@ -1,4 +1,5 @@
-FROM sharelatex/sharelatex:5.3.2
+ARG SHARELATEX_VERSION=latest
+FROM sharelatex/sharelatex:${SHARELATEX_VERSION}
 
 RUN wget "https://mirror.ctan.org/systems/texlive/tlnet/update-tlmgr-latest.sh" \
     && sh update-tlmgr-latest.sh \
