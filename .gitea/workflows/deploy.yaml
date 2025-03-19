@@ -20,8 +20,5 @@ jobs:
       - name: Build image
         run: docker build -t ${{ vars.URL }}/${{ vars.repository }}:latest .
 
-      - name: Debug
-        run: sleep 99999
-
       - name: Push image
         run: docker push ${{ vars.URL }}/${{ vars.repository }}:latest
