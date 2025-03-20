@@ -1,9 +1,6 @@
 name: Deploy Sharelatex Full
 run-name: ${{ gitea.actor }} is deploying ${{ vars.repository }}
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       sharelatex_version:
