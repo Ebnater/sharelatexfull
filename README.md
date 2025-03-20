@@ -43,7 +43,7 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 
 3. After you made the changes you can now start Overleaf using `bin/up` (Use `bin/up -d` for detaching the output)
 
-4. Go to http://127.0.0.1:8080/launchpad on first run
+4. Go to http://127.0.0.1/launchpad on first run
 
 
 ## Customization
