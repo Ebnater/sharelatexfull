@@ -30,6 +30,8 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 
 ## Adding this repository to your Overleaf Toolkit
 
+### Manual Installation
+
 1. Follow the steps from the [Overleaf Quickstart Guide](https://github.com/overleaf/toolkit/blob/master/doc/quick-start-guide.md)
 
 2. Before running `bin/up` go to `config/overleaf.rc` and make the following changes:
@@ -45,6 +47,11 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 
 4. Go to http://127.0.0.1/launchpad on first run
 
+### Automatic Installation [Experimental]
+
+```bash
+curl -sSL https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh | bash
+```
 
 ## Customization
 
