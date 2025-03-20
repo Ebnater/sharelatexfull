@@ -29,3 +29,25 @@ jobs:
         env:
           SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
         run: docker push ${{ vars.URL }}/${{ vars.repository }}:${{ env.SHARELATEX_VERSION }}
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Build image
+        run: docker build -t ${{ vars.URL }}/${{ vars.repository }}:latest .
+
+      - name: Run image
+        run: docker run --rm ${{ vars.URL }}/${{ vars.repository }}:latest
+
+      - name: Check TeX Live version
+        run: docker exec -it ${{ vars.URL }}/${{ vars.repository }}:latest /bin/sh -c "tlmgr --version"
+      
+      - name: Run TexLive Check
+        run: docker exec -it ${{ vars.URL }}/${{ vars.repository }}:latest /bin/sh -c "tlmgr check depends && tlmgr check executes && tlmgr check texmfdbs"
+
+        
