@@ -50,7 +50,7 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 ### Automatic Installation [Experimental]
 
 ```bash
-curl -sSL https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh | bash
+curl -sSL https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh | sh
 ```
 
 ## Customization
