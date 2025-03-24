@@ -1,10 +1,11 @@
 #!/bin/bash
 
 CUSTOM_IMAGE_URL=git.serv.eserver.icu/ewbc/sharelatexfull
+MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh
 
+whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
-if ! command -v docker &> /dev/null; then
-    echo "Docker wird installiert..."
+if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
     # Docker-Installation
     sudo apt update
     sudo apt install -y ca-certificates curl
@@ -18,8 +19,11 @@ if ! command -v docker &> /dev/null; then
     sudo apt update
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     echo "Docker wurde installiert."
-else
-    echo "Docker ist bereits installiert."
+fi
+
+if ! command -v docker &> /dev/null; then
+    whiptail --title "Fehler" --msgbox "Docker ist nicht installiert. Das Skript wird beendet." 8 78
+    exit 1
 fi
 
 # Git-Repository klonen
@@ -34,6 +38,8 @@ fi
 
 EXEC_BIN_PATH="$LOCAL_PATH/bin"
 
+
+
 # Initialisiere Konfiguration
 $EXEC_BIN_PATH/init
 
@@ -47,22 +53,29 @@ else
     echo "Konfigurationsdatei nicht gefunden."
 fi
 
-# Finde Desktop Pfad
-SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
-SHORTCUT_PATH=$(echo "$SHORTCUT_PATH" | sed 's/\r//g')
-SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
+if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung erstellt werden?" 8 78; then
+    # Managerskript herunterladen
+    echo "Lade den Manager-Skript herunter"
+    wget -O "$EXEC_BIN_PATH/overleaf_manager_script.sh" "$MANAGER_SCRIPT_URL"
+    chmod +x "$EXEC_BIN_PATH/overleaf_manager_script.sh"
 
-# Desktop-Verknüpfung erstellen
-TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/up\""
+    # Finde Desktop Pfad
+    SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
+    SHORTCUT_PATH=$(echo "$SHORTCUT_PATH" | sed 's/\r//g')
+    SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
 
-echo "Erstellen der Desktop-Verknüpfung..."
+    # Desktop-Verknüpfung erstellen
+    TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
 
-powershell.exe -Command "
-    \$WshShell = New-Object -ComObject WScript.Shell;
-    \$shortcut = \$WshShell.CreateShortcut('$SHORTCUT_PATH');
-    \$shortcut.Arguments = '$TARGET_PATH';
-    \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
-    \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
-    \$shortcut.Save();
-    "
-echo "Verknüpfung auf dem Desktop erstellt."
+    echo "Erstellen der Desktop-Verknüpfung..."
+
+    powershell.exe -Command "
+        \$WshShell = New-Object -ComObject WScript.Shell;
+        \$shortcut = \$WshShell.CreateShortcut('$SHORTCUT_PATH');
+        \$shortcut.Arguments = '$TARGET_PATH';
+        \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
+        \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
+        \$shortcut.Save();
+        "
+    echo "Verknüpfung auf dem Desktop erstellt."
+fi
