@@ -53,7 +53,10 @@ do
     case $OPTION in
         1)
             echo "Starte bin/up..."
-            ./bin/up
+            if whiptail --title "Starte Overleaf" --yesno "Von dem Logs detachen?" 8 78 then
+                ./bin/up -d
+            else
+                ./bin/up
             ;;
         2)
             echo "Starte bin/stop..."
