@@ -71,7 +71,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
     SHORTCUT_PATH=$(echo "$SHORTCUT_PATH" | sed 's/\r//g')
-    SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
+    SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf\ Manager.lnk
 
     # Desktop-Verknüpfung erstellen
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
@@ -101,7 +101,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         echo "${GRAY}"
         START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
         START_MENU_PATH=$(echo "$START_MENU_PATH" | sed 's/\r//g')
-        START_MENU_PATH=$START_MENU_PATH\\Programs\\Overleaf Manager.lnk
+        START_MENU_PATH=$START_MENU_PATH\\Programs\\Overleaf\ Manager.lnk
 
         powershell.exe -Command "
             \$WshShell = New-Object -ComObject WScript.Shell;
