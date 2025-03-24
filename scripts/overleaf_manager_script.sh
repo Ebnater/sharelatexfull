@@ -75,8 +75,8 @@ do
             whiptail --title "bin/doctor Output" --msgbox "$DOCTOR_OUTPUT" 20 70
             ;;
         6)
-            if [ -f ../configs/version ]; then
-                CURRENT_VERSION=$(cat ../configs/version)
+            if [ -f configs/version ]; then
+                CURRENT_VERSION=$(cat configs/version)
             else
                 CURRENT_VERSION="Unbekannt"
             fi
@@ -84,7 +84,7 @@ do
             NEW_VERSION=$(whiptail --title "Version wechseln" --inputbox "Aktuelle Version: $CURRENT_VERSION\nGeben Sie die neue Version ein:" 10 60 "$CURRENT_VERSION" 3>&1 1>&2 2>&3)
 
             if [ $? -eq 0 ]; then
-                echo "$NEW_VERSION" > ../configs/version
+                echo "$NEW_VERSION" > configs/version
                 whiptail --title "Erfolg" --msgbox "Die Version wurde auf $NEW_VERSION aktualisiert." 10 60
             else
                 whiptail --title "Abgebrochen" --msgbox "Die Aktion wurde abgebrochen." 10 60
