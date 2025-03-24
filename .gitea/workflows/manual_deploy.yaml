@@ -13,9 +13,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - name: Checkout
-            uses: actions/checkout@v4
-              with:
-                fetch-depth: 0
+          uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
 
       
         - name: Login to Gitea Registry
