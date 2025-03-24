@@ -46,7 +46,7 @@ do
     "1" "Starten" \
     "2" "Stoppen" \
     "3" "Updaten" \
-    "4" "Neustarten" \
+    "4" "Shell" \
     "5" "Frage den Doktor" \
     "6" "Version wechseln" \
     "7" "Konfiguration anpassen" \
@@ -84,8 +84,8 @@ do
             echo -e "${NC}"
             ;;
         4)
-            echo "Starte bin/restart..."
-            ./bin/restart
+            echo "Starte bin/shell..."
+            ./bin/shell
             ;;
         5)
             echo "Starte bin/doctor..."
