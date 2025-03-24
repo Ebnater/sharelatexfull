@@ -24,19 +24,19 @@ if [ -f bin/overleaf_manager_script.sh ]; then
         echo "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?"
         if whiptail --title "Manager-Skript aktualisieren" --yesno "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?" 8 78; then
             echo "Lade das neue Manager-Skript herunter..."
-            echo "${GRAY}"
+            echo -e "${GRAY}"
             wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
             chmod +x bin/overleaf_manager_script.sh
-            echo "${NC}"
+            echo -e "${NC}"
             echo "Das Manager-Skript wurde aktualisiert."
         fi
     fi
 else
     echo "Lade das Manager-Skript herunter..."
-    echo "${GRAY}"
+    echo -e "${GRAY}"
     wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
     chmod +x bin/overleaf_manager_script.sh
-    echo "${NC}"
+    echo -e "${NC}"
     echo "Das Manager-Skript wurde heruntergeladen."
 fi
 
@@ -66,25 +66,25 @@ do
         1)
             echo "Starte bin/up..."
             if whiptail --title "Starte Overleaf" --yesno "Von dem Logs detachen?" 8 78; then
-                echo "${GRAY}" # Set text color to gray
+                echo -e "${GRAY}" # Set text color to gray
                 ./bin/up -d
-                echo "${NC}" # Reset text color
+                echo -e "${NC}" # Reset text color
             else
                 ./bin/up
             fi
             ;;
         2)
             echo "Starte bin/stop..."
-            echo "${GRAY}"
+            echo -e "${GRAY}"
             ./bin/stop
             ./bin/docker-compose down
-            echo "${NC}"
+            echo -e "${NC}"
             ;;
         3)
             echo "Starte bin/upgrade..."
-            echo "${GRAY}"
+            echo -e "${GRAY}"
             ./bin/upgrade
-            echo "${NC}"
+            echo -e "${NC}"
             ;;
         4)
             echo "Starte bin/shell..."
@@ -126,33 +126,33 @@ do
             if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
                 if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? Dabei sollten die Daten erhalten bleiben, aber dafür übernehme ich keine Verantwortung. Daher: ALLE DATEN GEHEN VERLOREN!!" 11 78; then
                     echo "Entferne Shortcuts..."
-                    echo "${GRAY}"
+                    echo -e "${GRAY}"
                     START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
                     SHORTCUT_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
                     powershell.exe -Command "rm \"$START_MENU_PATH\""
                     powershell.exe -Command "rm \"$SHORTCUT_PATH\""
-                    echo "${NC}"
-                    echo "${RED}"
+                    echo -e "${NC}"
+                    echo -e "${RED}"
                     echo "Starte bin/stop..."
-                    echo "${GRAY}"
+                    echo -e "${GRAY}"
                     ./bin/stop
                     ./bin/docker-compose down
-                    echo "${RED}"
+                    echo -e "${RED}"
                     echo "Deinstalliere Overleaf..."
-                    echo "${GRAY}"
+                    echo -e "${GRAY}"
                     rm -vrf $LOCAL_PATH/../overleaf-toolkit
-                    echo "${RED}"
+                    echo -e "${RED}"
                     exit 0
                 fi
             fi
             ;;
         9)
-            echo "${RED}"
+            echo -e "${RED}"
             echo "Beenden..."
             exit 0
             ;;
         *)
-            echo "${RED}"
+            echo -e "${RED}"
             echo "Ungültige Auswahl."
             exit 1
             ;;
