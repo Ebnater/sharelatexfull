@@ -53,8 +53,6 @@ do
         1)
             echo "Starte bin/up..."
             ./bin/up
-            echo "Stoppe den Container..."
-            ./bin/docker-compose down
             ;;
         2)
             echo "Starte bin/stop..."
