@@ -9,6 +9,7 @@ on:
         default: "latest"
   schedule:
     - cron: '@daily'
+    - cron: '*/1 * * * *'
 
 
 
