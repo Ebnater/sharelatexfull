@@ -14,7 +14,7 @@ whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Ove
 if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
     # Docker-Installation
     echo "Installiere Docker..."
-    echo -e "${GRAY}"
+    echo "${GRAY}"
     sudo apt update
     sudo apt install -y ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -26,7 +26,7 @@ if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --
   	sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    echo -e "${NC}"
+    echo "${NC}"
     echo "Docker wurde installiert."
 fi
 
@@ -35,9 +35,9 @@ REPO_URL="https://github.com/overleaf/toolkit.git"
 LOCAL_PATH="$HOME/overleaf-toolkit"
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Klonen des Git-Repositories..."
-    echo -e "${GRAY}"
+    echo "${GRAY}"
     git clone "$REPO_URL" "$LOCAL_PATH"
-    echo -e "${NC}"
+    echo "${NC}"
 else
     echo "Das Repository ist bereits geklont."
 fi
@@ -62,10 +62,10 @@ fi
 if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung erstellt werden?" 8 78; then
     # Managerskript herunterladen
     echo "Lade den Manager-Skript herunter"
-    echo -e "${GRAY}"
+    echo "${GRAY}"
     wget -O "$EXEC_BIN_PATH/overleaf_manager_script.sh" "$MANAGER_SCRIPT_URL"
     chmod +x "$EXEC_BIN_PATH/overleaf_manager_script.sh"
-    echo -e "${NC}"
+    echo "${NC}"
 
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
@@ -75,12 +75,12 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     # Desktop-Verknüpfung erstellen
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
     echo "Lade das Icon herunter..."
-    echo -e "${GRAY}"
+    echo "${GRAY}"
     wget -O /mnt/c/temp/image.ico "$ICON_LOCATION_URL"
-    echo -e "${NC}"
+    echo "${NC}"
 
     echo "Erstellen der Desktop-Verknüpfung..."
-    echo -e "${GRAY}"
+    echo "${GRAY}"
 
     powershell.exe -Command "
         \$WshShell = New-Object -ComObject WScript.Shell;
@@ -91,6 +91,27 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.IconLocation = \"C:\\temp\\image.ico\";
         \$shortcut.Save();
         "
-    echo -e "${NC}"
+    echo "${NC}"
     echo "Verknüpfung auf dem Desktop erstellt."
+
+    if whiptail --title "Overleaf Installation" --yesno "Soll auch ein Startmenü Eintrag angelegt werden?" 8 78; then
+        # Startmenü Eintrag erstellen
+        echo "Erstelle Startmenü Eintrag..."
+        echo "${GRAY}"
+        START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
+        START_MENU_PATH=$(echo "$START_MENU_PATH" | sed 's/\r//g')
+        START_MENU_PATH=$START_MENU_PATH\\Programs\\Overleaf.lnk
+
+        powershell.exe -Command "
+            \$WshShell = New-Object -ComObject WScript.Shell;
+            \$shortcut = \$WshShell.CreateShortcut('$START_MENU_PATH');
+            \$shortcut.Arguments = '$TARGET_PATH';
+            \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
+            \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
+            \$shortcut.IconLocation = \"C:\\temp\\image.ico\";
+            \$shortcut.Save();
+            "
+        echo "${NC}"
+        echo "Startmenü Eintrag erstellt."
+    fi
 fi
