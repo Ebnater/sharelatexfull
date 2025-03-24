@@ -129,9 +129,10 @@ do
                     echo -e "${GRAY}"
                     START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
                     SHORTCUT_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
-                    powershell.exe -Command "rm \"$START_MENU_PATH\""
+                    # Add Powershell to PATH
+                    /mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0//powershell.exe -Command "rm \"$START_MENU_PATH\""
                     sleep 10000
-                    powershell.exe -Command "rm \"$SHORTCUT_PATH\""
+                    /mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0//powershell.exe -Command "rm \"$SHORTCUT_PATH\""
                     echo -e "${NC}"
                     echo -e "${RED}"
                     echo "Starte bin/stop..."
