@@ -70,7 +70,7 @@ do
         5)
             echo "Starte bin/doctor..."
             DOCTOR_OUTPUT=$(./bin/doctor 2>&1) # Capture the output of ./bin/doctor
-            whiptail --title "bin/doctor Output" --msgbox "$DOCTOR_OUTPUT" 20 70
+            whiptail --title "bin/doctor Output" --msgbox --scrolltext "$DOCTOR_OUTPUT" 20 70
             ;;
         6)
             if [ -f config/version ]; then
