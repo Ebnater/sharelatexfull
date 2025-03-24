@@ -2,6 +2,7 @@
 
 CUSTOM_IMAGE_URL=git.serv.eserver.icu/ewbc/sharelatexfull
 MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh
+ICON_LOCATION_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/image.ico
 
 # Colors
 RED='\033[0;31m'
@@ -73,6 +74,10 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
 
     # Desktop-Verknüpfung erstellen
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
+    echo "Lade das Icon herunter..."
+    echo -e "${GRAY}"
+    wget -O /mnt/c/temp/image.ico "$ICON_LOCATION_URL"
+    echo -e "${NC}"
 
     echo "Erstellen der Desktop-Verknüpfung..."
     echo -e "${GRAY}"
@@ -83,6 +88,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.Arguments = '$TARGET_PATH';
         \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
+        \$shortcut.IconLocation = \"C:\\temp\\image.ico\";
         \$shortcut.Save();
         "
     echo -e "${NC}"
