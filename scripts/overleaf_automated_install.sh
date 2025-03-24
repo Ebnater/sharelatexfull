@@ -21,11 +21,6 @@ if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --
     echo "Docker wurde installiert."
 fi
 
-if ! command -v docker &> /dev/null; then
-    whiptail --title "Fehler" --msgbox "Docker ist nicht installiert. Das Skript wird beendet." 8 78
-    exit 1
-fi
-
 # Git-Repository klonen
 REPO_URL="https://github.com/overleaf/toolkit.git"
 LOCAL_PATH="$HOME/overleaf-toolkit"
