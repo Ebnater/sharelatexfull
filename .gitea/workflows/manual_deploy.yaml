@@ -22,11 +22,11 @@ jobs:
           run: echo "${{ secrets.REGISTRY_PAT }}" | docker login ${{ vars.URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
 
         - name: Build image
-            env:
-                SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
+          env:
+            SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
           run: docker build --build-arg SHARELATEX_VERSION=${{ env.SHARELATEX_VERSION }} -t ${{ vars.URL }}/${{ vars.repository }}:${{ env.SHARELATEX_VERSION }} .
 
         - name: Push image
-            env:
+          env:
             SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
           run: docker push ${{ vars.URL }}/${{ vars.repository }}:${{ env.SHARELATEX_VERSION }}    
