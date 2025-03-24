@@ -125,6 +125,13 @@ do
         8)
             if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
                 if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? Dabei sollten die Daten erhalten bleiben, aber dafür übernehme ich keine Verantwortung. Daher: ALLE DATEN GEHEN VERLOREN!!" 11 78; then
+                    echo "Entferne Shortcuts..."
+                    echo "${GRAY}"
+                    START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
+                    SHORTCUT_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
+                    powershell.exe -Command "rm \"$START_MENU_PATH\""
+                    powershell.exe -Command "rm \"$SHORTCUT_PATH\""
+                    echo "${NC}"
                     echo "${RED}"
                     echo "Starte bin/stop..."
                     echo "${GRAY}"
@@ -135,14 +142,7 @@ do
                     echo "${GRAY}"
                     rm -vrf $LOCAL_PATH/../overleaf-toolkit
                     echo "${RED}"
-                    echo "Entferne Shortcuts..."
-                    echo "${GRAY}"
-                    # Hole den Startmenüpfad aus einer Datei
-                    START_MENU_PATH=$(cat .shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
-                    SHORTCUT_PATH=$(cat .shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
-                    rm -vf "$START_MENU_PATH\\Programs\\Overleaf.lnk"
-                    rm -vf "$SHORTCUT_PATH\\Overleaf.lnk"
-                    echo "${NC}"
+                    exit 0
                 fi
             fi
             ;;
