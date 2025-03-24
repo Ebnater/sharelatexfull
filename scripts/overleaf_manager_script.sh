@@ -1,23 +1,48 @@
 #!/bin/bash
 
+MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh
+
 # Überprüfen, ob Whiptail installiert ist
 if ! command -v whiptail &> /dev/null; then
     echo "Whiptail ist nicht installiert. Bitte installieren Sie es zuerst."
     exit 1
 fi
 
-# Menü mit Whiptail anzeigen
-OPTION=$(whiptail --title "Overleaf Manager Script" --menu "Wählen Sie eine Aktion aus:" 15 50 5 \
-"1" "Starten" \
-"2" "Stoppen" \
-"3" "Updaten" \
-"4" "Neustarten" \
-"5" "Frage den Doktor" \
-"6" "Version wechseln" \
-"7" "Beenden" 3>&1 1>&2 2>&3)
+# Check for new Manager Script Version
+if [ -f bin/overleaf_manager_script.sh ]; then
+    CURRENT_MD5=$(md5sum bin/overleaf_manager_script.sh | awk '{print $1}')
+    NEW_MD5=$(curl -s $MANAGER_SCRIPT_URL | md5sum | awk '{print $1}')
 
-# Überprüfen, ob der Benutzer abgebrochen hat
-while do
+    if [ "$CURRENT_MD5" != "$NEW_MD5" ]; then
+        echo "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?"
+        if whiptail --title "Manager-Skript aktualisieren" --yesno "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?" 8 78; then
+            echo "Lade das neue Manager-Skript herunter..."
+            wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
+            chmod +x bin/overleaf_manager_script.sh
+            echo "Das Manager-Skript wurde aktualisiert."
+        fi
+    fi
+else
+    echo "Lade das Manager-Skript herunter..."
+    wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
+    chmod +x bin/overleaf_manager_script.sh
+    echo "Das Manager-Skript wurde heruntergeladen."
+fi
+
+
+# Menü mit Whiptail anzeigen
+while :
+do
+    OPTION=$(whiptail --title "Overleaf Manager Script" --menu "Wählen Sie eine Aktion aus:" 15 50 5 \
+    "1" "Starten" \
+    "2" "Stoppen" \
+    "3" "Updaten" \
+    "4" "Neustarten" \
+    "5" "Frage den Doktor" \
+    "6" "Version wechseln" \
+    "7" "Beenden" 3>&1 1>&2 2>&3)
+
+    # Überprüfen, ob der Benutzer abgebrochen hat
     if [ $? -ne 0 ]; then
         echo "Abgebrochen."
         exit 1
