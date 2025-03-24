@@ -57,6 +57,7 @@ do
                 ./bin/up -d
             else
                 ./bin/up
+            fi
             ;;
         2)
             echo "Starte bin/stop..."
