@@ -13,6 +13,8 @@ if ! command -v whiptail &> /dev/null; then
     exit 1
 fi
 
+LOCAL_PATH=$(pwd)
+
 # Check for new Manager Script Version
 if [ -f bin/overleaf_manager_script.sh ]; then
     CURRENT_MD5=$(md5sum bin/overleaf_manager_script.sh | awk '{print $1}')
@@ -22,19 +24,19 @@ if [ -f bin/overleaf_manager_script.sh ]; then
         echo "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?"
         if whiptail --title "Manager-Skript aktualisieren" --yesno "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?" 8 78; then
             echo "Lade das neue Manager-Skript herunter..."
-            echo -e "${GRAY}"
+            echo "${GRAY}"
             wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
             chmod +x bin/overleaf_manager_script.sh
-            echo -e "${NC}"
+            echo "${NC}"
             echo "Das Manager-Skript wurde aktualisiert."
         fi
     fi
 else
     echo "Lade das Manager-Skript herunter..."
-    echo -e "${GRAY}"
+    echo "${GRAY}"
     wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
     chmod +x bin/overleaf_manager_script.sh
-    echo -e "${NC}"
+    echo "${NC}"
     echo "Das Manager-Skript wurde heruntergeladen."
 fi
 
@@ -64,25 +66,25 @@ do
         1)
             echo "Starte bin/up..."
             if whiptail --title "Starte Overleaf" --yesno "Von dem Logs detachen?" 8 78; then
-                echo -e "${GRAY}" # Set text color to gray
+                echo "${GRAY}" # Set text color to gray
                 ./bin/up -d
-                echo -e "${NC}" # Reset text color
+                echo "${NC}" # Reset text color
             else
                 ./bin/up
             fi
             ;;
         2)
             echo "Starte bin/stop..."
-            echo -e "${GRAY}"
+            echo "${GRAY}"
             ./bin/stop
             ./bin/docker-compose down
-            echo -e "${NC}"
+            echo "${NC}"
             ;;
         3)
             echo "Starte bin/upgrade..."
-            echo -e "${GRAY}"
+            echo "${GRAY}"
             ./bin/upgrade
-            echo -e "${NC}"
+            echo "${NC}"
             ;;
         4)
             echo "Starte bin/shell..."
@@ -122,33 +124,35 @@ do
             ;;
         8)
             if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
-                if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? DABEI GEHEN ALLE DATEN VERLOREN!!" 8 78; then
+                if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? Dabei sollten die Daten erhalten bleiben, aber dafür übernehme ich keine Verantwortung. Daher: ALLE DATEN GEHEN VERLOREN!!" 11 78; then
+                    echo "${RED}"
                     echo "Starte bin/stop..."
-                    echo -e "${RED}"
+                    echo "${GRAY}"
                     ./bin/stop
                     ./bin/docker-compose down
-                    echo -e "${NC}"
+                    echo "${RED}"
                     echo "Deinstalliere Overleaf..."
-                    echo -e "${RED}"
-                    rm -vrf $HOME/overleaf-toolkit
-                    echo -e "${NC}"
+                    echo "${GRAY}"
+                    rm -vrf $LOCAL_PATH/../overleaf-toolkit
+                    echo "${RED}"
                     echo "Entferne Shortcuts..."
-                    echo -e "${RED}"
-                    START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
-                    SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
+                    echo "${GRAY}"
+                    # Hole den Startmenüpfad aus einer Datei
+                    START_MENU_PATH=$(cat .shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
+                    SHORTCUT_PATH=$(cat .shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
                     rm -vf "$START_MENU_PATH\\Programs\\Overleaf.lnk"
                     rm -vf "$SHORTCUT_PATH\\Overleaf.lnk"
-                    echo -e "${NC}"
+                    echo "${NC}"
                 fi
             fi
             ;;
         9)
-            echo -e "${RED}"
+            echo "${RED}"
             echo "Beenden..."
             exit 0
             ;;
         *)
-            echo -e "${RED}"
+            echo "${RED}"
             echo "Ungültige Auswahl."
             exit 1
             ;;
