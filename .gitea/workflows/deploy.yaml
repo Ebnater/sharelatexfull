@@ -9,7 +9,6 @@ on:
         default: "latest"
   schedule:
     - cron: '@daily'
-    - cron: '*/1 * * * *'
 
 
 
@@ -49,25 +48,3 @@ jobs:
 
       - name: Push image
         run: docker push ${{ vars.URL }}/${{ vars.repository }}:${{ needs.get-current-version.outputs.VERSION }}   
-
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      
-      - name: Login to Gitea Registry
-        run: echo "${{ secrets.REGISTRY_PAT }}" | docker login ${{ vars.URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
-
-      - name: Build image
-        env:
-          SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
-        run: docker build --build-arg SHARELATEX_VERSION=${{ env.SHARELATEX_VERSION }} -t ${{ vars.URL }}/${{ vars.repository }}:${{ env.SHARELATEX_VERSION }} .
-
-      - name: Push image
-        env:
-          SHARELATEX_VERSION: ${{ github.event.inputs.sharelatex_version }}
-        run: docker push ${{ vars.URL }}/${{ vars.repository }}:${{ env.SHARELATEX_VERSION }}    
