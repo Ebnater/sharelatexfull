@@ -19,7 +19,10 @@ jobs:
       VERSION: ${{ steps.export-var.outputs.VERSION }}
     steps:
       - name: Get current Version
-        run: VERSION=$(curl https://raw.githubusercontent.com/overleaf/toolkit/refs/heads/master/lib/config-seed/version) >> $GITHUB_ENV
+        run: |
+          curl https://raw.githubusercontent.com/overleaf/toolkit/refs/heads/master/lib/config-seed/version
+          VERSION=$(curl https://raw.githubusercontent.com/overleaf/toolkit/refs/heads/master/lib/config-seed/version)
+          echo "VERSION=$VERSION"  >> $GITHUB_ENV
       
       - name: Export Variable
         id: export-var
