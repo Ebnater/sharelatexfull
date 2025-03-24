@@ -2,6 +2,11 @@
 
 MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh
 
+# Colors
+RED='\033[0;31m'
+GRAY='\033[1;30m'
+NC='\033[0m' # No Color
+
 # Überprüfen, ob Whiptail installiert ist
 if ! command -v whiptail &> /dev/null; then
     echo "Whiptail ist nicht installiert. Bitte installieren Sie es zuerst."
@@ -17,15 +22,19 @@ if [ -f bin/overleaf_manager_script.sh ]; then
         echo "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?"
         if whiptail --title "Manager-Skript aktualisieren" --yesno "Es gibt eine neue Version des Manager-Skripts. Möchten Sie es aktualisieren?" 8 78; then
             echo "Lade das neue Manager-Skript herunter..."
+            echo -e "${GRAY}"
             wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
             chmod +x bin/overleaf_manager_script.sh
+            echo -e "${NC}"
             echo "Das Manager-Skript wurde aktualisiert."
         fi
     fi
 else
     echo "Lade das Manager-Skript herunter..."
+    echo -e "${GRAY}"
     wget -O bin/overleaf_manager_script.sh $MANAGER_SCRIPT_URL
     chmod +x bin/overleaf_manager_script.sh
+    echo -e "${NC}"
     echo "Das Manager-Skript wurde heruntergeladen."
 fi
 
@@ -54,19 +63,25 @@ do
         1)
             echo "Starte bin/up..."
             if whiptail --title "Starte Overleaf" --yesno "Von dem Logs detachen?" 8 78; then
+                echo -e "${GRAY}" # Set text color to gray
                 ./bin/up -d
+                echo -e "${NC}" # Reset text color
             else
                 ./bin/up
             fi
             ;;
         2)
             echo "Starte bin/stop..."
+            echo -e "${GRAY}"
             ./bin/stop
             ./bin/docker-compose down
+            echo -e "${NC}"
             ;;
         3)
             echo "Starte bin/upgrade..."
+            echo -e "${GRAY}"
             ./bin/upgrade
+            echo -e "${NC}"
             ;;
         4)
             echo "Starte bin/restart..."
@@ -105,10 +120,12 @@ do
             nano $CONFIG_FILE_PATH
             ;;
         8)
+            echo -e "${RED}"
             echo "Beenden..."
             exit 0
             ;;
         *)
+            echo -e "${RED}"
             echo "Ungültige Auswahl."
             exit 1
             ;;

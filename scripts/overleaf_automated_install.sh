@@ -3,10 +3,17 @@
 CUSTOM_IMAGE_URL=git.serv.eserver.icu/ewbc/sharelatexfull
 MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh
 
+# Colors
+RED='\033[0;31m'
+GRAY='\033[1;30m'
+NC='\033[0m'
+
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
 if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
     # Docker-Installation
+    echo "Installiere Docker..."
+    echo -e "${GRAY}"
     sudo apt update
     sudo apt install -y ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -18,6 +25,7 @@ if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --
   	sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    echo -e "${NC}"
     echo "Docker wurde installiert."
 fi
 
@@ -26,7 +34,9 @@ REPO_URL="https://github.com/overleaf/toolkit.git"
 LOCAL_PATH="$HOME/overleaf-toolkit"
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Klonen des Git-Repositories..."
+    echo -e "${GRAY}"
     git clone "$REPO_URL" "$LOCAL_PATH"
+    echo -e "${NC}"
 else
     echo "Das Repository ist bereits geklont."
 fi
@@ -51,8 +61,10 @@ fi
 if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung erstellt werden?" 8 78; then
     # Managerskript herunterladen
     echo "Lade den Manager-Skript herunter"
+    echo -e "${GRAY}"
     wget -O "$EXEC_BIN_PATH/overleaf_manager_script.sh" "$MANAGER_SCRIPT_URL"
     chmod +x "$EXEC_BIN_PATH/overleaf_manager_script.sh"
+    echo -e "${NC}"
 
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
@@ -63,6 +75,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
 
     echo "Erstellen der Desktop-Verknüpfung..."
+    echo -e "${GRAY}"
 
     powershell.exe -Command "
         \$WshShell = New-Object -ComObject WScript.Shell;
@@ -72,5 +85,6 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
         \$shortcut.Save();
         "
+    echo -e "${NC}"
     echo "Verknüpfung auf dem Desktop erstellt."
 fi
