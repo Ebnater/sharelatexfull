@@ -77,7 +77,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
     echo "Lade das Icon herunter..."
     echo "${GRAY}"
-    wget -O /mnt/c/temp/image.ico "$ICON_LOCATION_URL"
+    wget -O /mnt/c/image.ico "$ICON_LOCATION_URL"
     echo "${NC}"
 
     echo "Erstellen der Desktop-Verknüpfung..."
@@ -89,7 +89,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.Arguments = '$TARGET_PATH';
         \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
-        \$shortcut.IconLocation = \"C:\\temp\\image.ico\";
+        \$shortcut.IconLocation = \"C:\\image.ico\";
         \$shortcut.Save();
         "
     echo "${NC}"
@@ -109,7 +109,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
             \$shortcut.Arguments = '$TARGET_PATH';
             \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
             \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
-            \$shortcut.IconLocation = \"C:\\temp\\image.ico\";
+            \$shortcut.IconLocation = \"C:\\image.ico\";
             \$shortcut.Save();
             "
         echo "${NC}"
