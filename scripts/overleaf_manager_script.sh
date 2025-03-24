@@ -40,7 +40,8 @@ do
     "4" "Neustarten" \
     "5" "Frage den Doktor" \
     "6" "Version wechseln" \
-    "7" "Beenden" 3>&1 1>&2 2>&3)
+    "7" "Konfiguration anpassen" \
+    "8" "Beenden" 3>&1 1>&2 2>&3)
 
     # Überprüfen, ob der Benutzer abgebrochen hat
     if [ $? -ne 0 ]; then
@@ -89,6 +90,17 @@ do
             fi
             ;;
         7)
+            if [ -f config/overleaf.rc ]; then
+                CONFIG_FILE_PATH=config/overleaf.rc
+            else
+                echo "Konfigurationsdatei nicht gefunden."
+                exit 1
+            fi
+
+            # Vorläfige Implementierung
+            nano $CONFIG_FILE_PATH
+            ;;
+        8)
             echo "Beenden..."
             exit 0
             ;;
