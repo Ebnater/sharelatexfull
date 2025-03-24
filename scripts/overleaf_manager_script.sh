@@ -50,7 +50,8 @@ do
     "5" "Frage den Doktor" \
     "6" "Version wechseln" \
     "7" "Konfiguration anpassen" \
-    "8" "Beenden" 3>&1 1>&2 2>&3)
+    "8" "Deinstallieren" \
+    "9" "Beenden" 3>&1 1>&2 2>&3)
 
     # Überprüfen, ob der Benutzer abgebrochen hat
     if [ $? -ne 0 ]; then
@@ -120,6 +121,23 @@ do
             nano $CONFIG_FILE_PATH
             ;;
         8)
+            echo "Starte bin/stop..."
+            echo -e "${GRAY}"
+            ./bin/stop
+            ./bin/docker-compose down
+            echo -e "${NC}"
+            echo "Deinstalliere Overleaf..."
+            echo -e "${GRAY}"
+            rm -vrf $HOME/overleaf-toolkit
+            echo -e "${NC}"
+            echo "Entferne Shortcuts..."
+            echo -e "${GRAY}"
+            START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
+            SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
+            rm -vf "$START_MENU_PATH\\Programs\\Overleaf.lnk"
+            rm -vf "$SHORTCUT_PATH\\Overleaf.lnk"
+            echo -e "${NC}"
+        9)
             echo -e "${RED}"
             echo "Beenden..."
             exit 0
