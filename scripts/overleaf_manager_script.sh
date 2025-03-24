@@ -124,7 +124,7 @@ do
             ;;
         8)
             if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
-                if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? Dabei sollten die Daten erhalten bleiben, aber dafür übernehme ich keine Verantwortung. Daher: ALLE DATEN GEHEN VERLOREN!!" 11 78; then
+                if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? ALLE DATEN GEHEN VERLOREN!!" 11 78; then
                     echo "Entferne Shortcuts..."
                     echo -e "${GRAY}"
                     START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
