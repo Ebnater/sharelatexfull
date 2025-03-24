@@ -121,22 +121,27 @@ do
             nano $CONFIG_FILE_PATH
             ;;
         8)
-            echo "Starte bin/stop..."
-            echo -e "${GRAY}"
-            ./bin/stop
-            ./bin/docker-compose down
-            echo -e "${NC}"
-            echo "Deinstalliere Overleaf..."
-            echo -e "${GRAY}"
-            rm -vrf $HOME/overleaf-toolkit
-            echo -e "${NC}"
-            echo "Entferne Shortcuts..."
-            echo -e "${GRAY}"
-            START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
-            SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
-            rm -vf "$START_MENU_PATH\\Programs\\Overleaf.lnk"
-            rm -vf "$SHORTCUT_PATH\\Overleaf.lnk"
-            echo -e "${NC}"
+            if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
+                if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? DABEI GEHEN ALLE DATEN VERLOREN!!" 8 78; then
+                    echo "Starte bin/stop..."
+                    echo -e "${RED}"
+                    ./bin/stop
+                    ./bin/docker-compose down
+                    echo -e "${NC}"
+                    echo "Deinstalliere Overleaf..."
+                    echo -e "${RED}"
+                    rm -vrf $HOME/overleaf-toolkit
+                    echo -e "${NC}"
+                    echo "Entferne Shortcuts..."
+                    echo -e "${RED}"
+                    START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
+                    SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
+                    rm -vf "$START_MENU_PATH\\Programs\\Overleaf.lnk"
+                    rm -vf "$SHORTCUT_PATH\\Overleaf.lnk"
+                    echo -e "${NC}"
+                fi
+            fi
+            ;;
         9)
             echo -e "${RED}"
             echo "Beenden..."
