@@ -49,7 +49,7 @@ if ! type docker &> /dev/null; then
                    echo "Der Benutzer $USER wurde zur Gruppe 'docker' hinzugefügt. Möglicherweise ist eine Neuanmeldung erforderlich."
                 fi
             else
-                echo -e "${NC}" # -e für die Interpretation von Escape-Sequenzen
+                echo -e "${RED}" # -e für die Interpretation von Escape-Sequenzen
                 echo "Fehler bei der Docker-Installation."
                 exit 1
             fi
@@ -109,6 +109,11 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
     SHORTCUT_PATH=$(echo "$SHORTCUT_PATH" | sed 's/\r//g')
     SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
+
+    # Icon Pfad
+    ICON_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
+    ICON_PATH=$(echo "$ICON_PATH" | sed 's/\r//g')
+    ICON_PATH=$ICON_PATH\\image.ico
 
     # Desktop-Verknüpfung erstellen
     TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
