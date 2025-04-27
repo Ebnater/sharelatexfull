@@ -131,7 +131,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.Arguments = '$TARGET_PATH';
         \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
-        \$shortcut.IconLocation = \"C:\\image.ico\";
+        \$shortcut.IconLocation = '$ICON_PATH';
         \$shortcut.Save();
         "
     echo "${NC}"
@@ -151,7 +151,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
             \$shortcut.Arguments = '$TARGET_PATH';
             \$shortcut.WorkingDirectory = \"C:\\Windows\\System32\";
             \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
-            \$shortcut.IconLocation = \"C:\\image.ico\";
+            \$shortcut.IconLocation = '$ICON_PATH';
             \$shortcut.Save();
             "
         echo "${NC}"
