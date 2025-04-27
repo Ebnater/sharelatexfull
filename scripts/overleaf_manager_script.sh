@@ -127,8 +127,9 @@ do
                 if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? ALLE DATEN GEHEN VERLOREN!!" 11 78; then
                     echo "Entferne Shortcuts..."
                     echo -e "${GRAY}"
-                    START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
-                    SHORTCUT_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
+                    source bin/.shortcut_paths
+                    #START_MENU_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_START_MENU_PATH | cut -d'=' -f2 | tr -d '"')
+                    #SHORTCUT_PATH=$(cat bin/.shortcut_paths | grep OVERLEAF_SHORTCUT_PATH | cut -d'=' -f2 | tr -d '"')
                     # Add Powershell to PATH
                     /mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0//powershell.exe -Command "rm \"$START_MENU_PATH\""
                     /mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0//powershell.exe -Command "rm \"$SHORTCUT_PATH\""
