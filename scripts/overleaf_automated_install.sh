@@ -12,24 +12,59 @@ NC='\033[0m'
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
 if ! type docker &> /dev/null; then
-    if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
-        # Docker-Installation
-        echo "Installiere Docker..."
-        echo "${GRAY}"
-        sudo apt update
-        sudo apt install -y ca-certificates curl
-        sudo install -m 0755 -d /etc/apt/keyrings
-        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-        sudo chmod a+r /etc/apt/keyrings/docker.asc
-        echo \
-  	    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  	    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  	    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt update
-        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-        echo "${NC}"
-        echo "Docker wurde installiert."
+    echo "Docker scheint nicht im PATH gefunden zu werden."
+    # Versuche whiptail nur, wenn ein Terminal vorhanden ist
+    if [ -t 0 ] && [ -t 1 ]; then
+        if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert oder nicht im PATH. Soll es installiert werden?" 10 78; then
+            echo "Installiere Docker..."
+            echo -e "${GRAY}" # -e für die Interpretation von Escape-Sequenzen
+            # Sicherstellen, dass sudo verfügbar ist oder das Skript als root läuft
+            if command -v sudo &> /dev/null; then
+                SUDO="sudo"
+            elif [ "$(id -u)" -eq 0 ]; then
+                SUDO="" # Bereits root, kein sudo nötig
+            else
+                echo "Fehler: sudo ist nicht verfügbar und das Skript läuft nicht als root. Installation abgebrochen."
+                exit 1
+            fi
+
+            # Docker-Installation (Ubuntu/Debian basiert)
+            $SUDO apt-get update
+            $SUDO apt-get install -y ca-certificates curl
+            $SUDO install -m 0755 -d /etc/apt/keyrings
+            $SUDO curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            $SUDO chmod a+r /etc/apt/keyrings/docker.asc
+            echo \
+              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+              $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+              $SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
+            $SUDO apt-get update
+            # Fehlerbehandlung für apt-get install hinzufügen
+            if $SUDO apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; then
+                echo -e "${NC}" # -e für die Interpretation von Escape-Sequenzen
+                echo "Docker wurde erfolgreich installiert."
+                # Fügen Sie den aktuellen Benutzer zur Docker-Gruppe hinzu (optional, erfordert Neuanmeldung)
+                if [ -n "$SUDO" ] && [ -n "$USER" ]; then
+                   $SUDO usermod -aG docker "$USER"
+                   echo "Der Benutzer $USER wurde zur Gruppe 'docker' hinzugefügt. Möglicherweise ist eine Neuanmeldung erforderlich."
+                fi
+            else
+                echo -e "${NC}" # -e für die Interpretation von Escape-Sequenzen
+                echo "Fehler bei der Docker-Installation."
+                exit 1
+            fi
+        else
+            echo "Docker-Installation übersprungen."
+        fi
+    else
+      echo "Kein interaktives Terminal erkannt. Whiptail-Abfrage übersprungen."
+      echo "Wenn Docker installiert werden soll, führen Sie das Installationsskript bitte direkt in einem Terminal aus."
+      # Hier könnten Sie entscheiden, ob Sie die Installation trotzdem versuchen wollen (ohne Nachfrage)
+      # oder das Skript beenden.
+      # exit 1 # Beenden, wenn keine Interaktion möglich ist und Docker fehlt.
     fi
+else
+    echo "Docker ist bereits installiert und im PATH gefunden."
 fi
 
 # Git-Repository klonen
