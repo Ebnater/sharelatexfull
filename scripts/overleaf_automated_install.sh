@@ -11,7 +11,7 @@ NC='\033[0m'
 
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
-if ! command -v docker &> /dev/null; then
+if ! type docker &> /dev/null; then
     if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
         # Docker-Installation
         echo "Installiere Docker..."
