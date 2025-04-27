@@ -11,23 +11,25 @@ NC='\033[0m'
 
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
-if ! command -v docker &> /dev/null && whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
-    # Docker-Installation
-    echo "Installiere Docker..."
-    echo "${GRAY}"
-    sudo apt update
-    sudo apt install -y ca-certificates curl
-    sudo install -m 0755 -d /etc/apt/keyrings
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    sudo chmod a+r /etc/apt/keyrings/docker.asc
-    echo \
-  	"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  	$(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-  	sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    echo "${NC}"
-    echo "Docker wurde installiert."
+if ! command -v docker &> /dev/null; then
+    if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert. Soll es installiert werden?" 8 78; then
+        # Docker-Installation
+        echo "Installiere Docker..."
+        echo "${GRAY}"
+        sudo apt update
+        sudo apt install -y ca-certificates curl
+        sudo install -m 0755 -d /etc/apt/keyrings
+        sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        sudo chmod a+r /etc/apt/keyrings/docker.asc
+        echo \
+  	    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  	    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  	    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt update
+        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        echo "${NC}"
+        echo "Docker wurde installiert."
+    fi
 fi
 
 # Git-Repository klonen
