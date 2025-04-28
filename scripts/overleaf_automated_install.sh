@@ -107,12 +107,12 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
 
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
-    SHORTCUT_PATH=${SHORTCUT_PATH//\\/\\\\}
+    SHORTCUT_PATH=$(printf '%s' "$SHORTCUT_PATH" | sed 's/\\/\\\\/g')
     SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
 
     # Icon Pfad
     ICON_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
-    ICON_PATH=${ICON_PATH//\\/\\\\}
+    ICON_PATH=$(printf '%s' "$ICON_PATH" | sed 's/\\/\\\\/g')
     ICON_PATH=$ICON_PATH\\image.ico
 
     # Desktop-Verknüpfung erstellen
