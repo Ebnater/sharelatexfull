@@ -50,7 +50,7 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 ### Automatic Installation [experimental]
 
 ```bash
-curl -sSL https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh | bash
+curl -fsSL -o /tmp/overleaf_install_script.sh https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh && bash /tmp/overleaf_install_script.sh && rm /tmp/overleaf_install_script.sh
 ```
 After the Installation you may launch `overleaf_manager_script.sh` or open the the Overleaf Manager Shortcut in Windows Start 
 

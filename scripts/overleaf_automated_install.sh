@@ -337,7 +337,7 @@ ask_and_create_desktop_shortcut() {
 
         # Speichere den Pfad für die Deinstallation/Verwaltung
         create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
-        run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
+        run_sudo_command chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE
         echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
         echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
 
@@ -387,7 +387,7 @@ ask_and_create_start_menu_shortcut() {
 
         # Speichere den Pfad für die Deinstallation/Verwaltung
         create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
-        run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
+        run_sudo_command chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE
         echo "export OVERLEAF_START_MENU_PATH='$shortcut_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
 
     else
