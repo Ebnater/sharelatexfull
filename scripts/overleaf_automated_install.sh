@@ -194,4 +194,5 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     fi
     # Lege die Variable in einer Datei ab
     echo "export OVERLEAF_SHORTCUT_PATH='$SHORTCUT_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
+    echo "export OVERLEAF_ICON_PATH='$ICON_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
 fi
