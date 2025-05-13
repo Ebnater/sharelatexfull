@@ -253,7 +253,9 @@ configure_overleaf() {
 download_manager_script() {
     print_status "Lade Manager-Skript herunter..."
     # Das Skript wird im bin-Verzeichnis gespeichert
+    echo -e "${GRAY}"
     download_file "$MANAGER_SCRIPT_URL" "$OVERLEAF_MANAGER_SCRIPT_LOCAL"
+    echo -e "${NC}"
     run_sudo_command "chmod +x \"$OVERLEAF_MANAGER_SCRIPT_LOCAL\""
 }
 
