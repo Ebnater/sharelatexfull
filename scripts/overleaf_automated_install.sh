@@ -65,9 +65,11 @@ run_sudo_command() {
     local cmd="$@"
     print_status "Führe als root aus: $cmd"
     # Verwenden Sie eval, um die Befehlszeichenfolge korrekt zu interpretieren
+    echo -e "${GRAY}"
     if ! eval "sudo $cmd"; then
         print_error "Fehler bei der Ausführung von: $cmd"
     fi
+    echo -e "${NC}"
 }
 
 # Lädt eine Datei herunter
@@ -372,6 +374,10 @@ ask_and_create_start_menu_shortcut() {
             if [ -z "$win_userprofile_path" ]; then
                 print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
             fi
+
+            # Icon herunterladen (direkt nach Windows über PowerShell)
+            print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
+            powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
 
             local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
 
