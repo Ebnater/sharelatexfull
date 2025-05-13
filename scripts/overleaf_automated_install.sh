@@ -331,9 +331,6 @@ ask_and_create_desktop_shortcut() {
             echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
 
-            # Fragen nach Startmenü-Verknüpfung direkt danach
-            ask_and_create_start_menu_shortcut "$wsl_command_args" "$win_icon_file"
-
         else
             print_warning "Erstellung der Desktop-Verknüpfung wurde übersprungen."
         fi
@@ -345,9 +342,6 @@ ask_and_create_desktop_shortcut() {
 # Fragt nach und erstellt die Startmenü-Verknüpfung
 # Nimmt die bereits erstellten wsl_command_args und den icon_file Pfad entgegen
 ask_and_create_start_menu_shortcut() {
-    local wsl_command_args="$1"
-    local win_icon_file="$2"
-
     #if [ -t 0 ] && [ -t 1 ]; then
         if whiptail --title "Overleaf Installation" --yesno "Soll ein Startmenü-Eintrag unter Windows angelegt werden?" 10 78; then
             print_status "Bereite Erstellung des Startmenü-Eintrags vor..."
@@ -360,7 +354,16 @@ ask_and_create_start_menu_shortcut() {
             if [ -z "$win_startmenu_path" ]; then
                 print_error "Konnte den Windows Startmenü Pfad nicht ermitteln."
             fi
-            # Optional: Unterordner hinzufügen
+            
+            local win_userprofile_path
+            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
+            win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
+            local win_icon_file=${win_userprofile_path}\\image.ico
+            if [ -z "$win_userprofile_path" ]; then
+                print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
+            fi
+
+            local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
 
             # Startmenü-Verknüpfung erstellen
             create_wsl_shortcut \
@@ -412,6 +415,9 @@ download_manager_script
 
 # Desktop-Verknüpfung anbieten und erstellen (inkl. Icon und Manager Skript Download)
 ask_and_create_desktop_shortcut
+
+# Startmenü-Verknüpfung anbieten und erstellen
+ask_and_create_start_menu_shortcut
 
 # Abschlussnachricht
 print_status "Overleaf (ShareLaTeX) Installation abgeschlossen."
