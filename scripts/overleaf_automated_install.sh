@@ -148,7 +148,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     ICON_PATH=$ICON_PATH\\image.ico
 
     # Desktop-Verknüpfung erstellen
-    TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
+    TARGET_PATH="-e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
     echo "Lade das Icon herunter..."
     echo "${GRAY}"
     powershell.exe -Command "wget -Uri $ICON_LOCATION_URL -OutFile $ICON_PATH"
