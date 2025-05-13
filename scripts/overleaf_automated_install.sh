@@ -292,7 +292,7 @@ ask_and_create_desktop_shortcut() {
             local win_desktop_path
             win_desktop_path=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
             win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
-            win_desktop_path=$win_desktop_path\\Overleaf.lnk
+            local shortcut_file=$win_desktop_path\\Overleaf.lnk
             if [ -z "$win_desktop_path" ]; then
                 print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
             fi
@@ -318,7 +318,7 @@ ask_and_create_desktop_shortcut() {
 
             # Desktop-Verknüpfung erstellen
             create_wsl_shortcut \
-                "$win_desktop_path" \
+                "$shortcut_file" \
                 "$wsl_command_args" \
                 "$OVERLEAF_INSTALL_PATH" \
                 "$win_icon_file" \
