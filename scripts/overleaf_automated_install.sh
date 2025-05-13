@@ -293,18 +293,18 @@ ask_and_create_desktop_shortcut() {
             local win_desktop_path
             win_desktop_path=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
             win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
+            win_desktop_path=$win_desktop_path\\Overleaf.lnk
             if [ -z "$win_desktop_path" ]; then
                 print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
             fi
-            local shortcut_file="${win_desktop_path}\\Overleaf.lnk"
 
             local win_userprofile_path
-            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile') | Write-Host")
-             win_userprofile_path=$(echo "$win_userprofile_path" | sed 's/\r//g; s/^[[:space:]]*//; s/[[:space:]]*$//')
+            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
+            win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
+            local win_icon_file=${win_userprofile_path}\\image.ico
             if [ -z "$win_userprofile_path" ]; then
                 print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
             fi
-            local win_icon_file="${win_userprofile_path}\\image.ico"
 
             # Icon herunterladen (direkt nach Windows über PowerShell)
             print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
@@ -319,7 +319,7 @@ ask_and_create_desktop_shortcut() {
 
             # Desktop-Verknüpfung erstellen
             create_wsl_shortcut \
-                "$shortcut_file" \
+                "$win_desktop_path" \
                 "$wsl_command_args" \
                 "$OVERLEAF_INSTALL_PATH" \
                 "$win_icon_file" \
