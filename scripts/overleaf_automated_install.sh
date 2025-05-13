@@ -249,11 +249,11 @@ download_manager_script() {
 
 # Erstellt eine Windows Desktop oder Startmenü Verknüpfung über PowerShell
 create_wsl_shortcut() {
-    local shortcut_file="$1"        # Pfad zur .lnk Datei (Windows Pfad)
-    local wsl_command_args="$2"     # Argumente für wsl.exe (z.B. "-e bash -c \"...\"")
-    local wsl_working_directory="$3" # Arbeitsverzeichnis für den WSL-Befehl (Linux Pfad)
-    local icon_file="$4"            # Pfad zur .ico Datei (Windows Pfad)
-    local description="$5"          # Beschreibung für die Verknüpfung (optional)
+    local shortcut_file=$1          # Pfad zur .lnk Datei (Windows Pfad)
+    local wsl_command_args=$2       # Argumente für wsl.exe (z.B. "-e bash -c \"...\"")
+    local wsl_working_directory=$3  # Arbeitsverzeichnis für den WSL-Befehl (Linux Pfad)
+    local icon_file=$4              # Pfad zur .ico Datei (Windows Pfad)
+    local description=$5            # Beschreibung für die Verknüpfung (optional)
 
     print_status "Erstelle Verknüpfung: $shortcut_file"
 
