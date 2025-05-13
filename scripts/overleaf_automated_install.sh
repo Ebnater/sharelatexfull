@@ -57,7 +57,7 @@ print_warning() {
 
 # Prüft, ob ein Befehl verfügbar ist
 command_exists() {
-    command -v "$1" &> /dev/null
+    command -v "$1" &>/dev/null
 }
 
 # Führt einen Befehl mit sudo aus und prüft auf Erfolg
@@ -105,7 +105,7 @@ check_dependencies() {
 
     # PowerShell Prüfung separat, da es ein Windows-Befehl ist
     if ! command_exists "powershell.exe"; then
-         print_error "PowerShell.exe wurde nicht im PATH gefunden. Dieses Skript benötigt PowerShell unter Windows (WSL)."
+        print_error "PowerShell.exe wurde nicht im PATH gefunden. Dieses Skript benötigt PowerShell unter Windows (WSL)."
     fi
     print_status "Alle notwendigen Abhängigkeiten gefunden."
 }
@@ -143,9 +143,9 @@ check_and_install_docker() {
 
                 # Docker APT Repository hinzufügen
                 echo \
-                  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-                  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-                  run_sudo_command "tee /etc/apt/sources.list.d/docker.list > /dev/null"
+                    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+                  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" |
+                    run_sudo_command "tee /etc/apt/sources.list.d/docker.list > /dev/null"
 
                 # Docker installieren
                 run_sudo_command "apt-get update"
@@ -188,8 +188,8 @@ clone_overleaf_toolkit() {
             # Hier könnte man `git pull` hinzufügen, wenn man das Repository aktualisieren möchte,
             # aber das Originalskript löscht und klont neu, wenn es kein Git-Repo ist.
             # Wenn wir immer neu klonen wollen, löschen wir einfach zuerst.
-             print_status "Lösche bestehendes Verzeichnis, um neu zu klonen (wie im Originalskript)."
-             run_sudo_command "rm -rf \"$OVERLEAF_INSTALL_PATH\""
+            print_status "Lösche bestehendes Verzeichnis, um neu zu klonen (wie im Originalskript)."
+            run_sudo_command "rm -rf \"$OVERLEAF_INSTALL_PATH\""
         else
             print_warning "Verzeichnis $OVERLEAF_INSTALL_PATH existiert, ist aber kein Git-Repository. Es wird gelöscht."
             run_sudo_command "rm -rf \"$OVERLEAF_INSTALL_PATH\""
@@ -206,8 +206,8 @@ clone_overleaf_toolkit() {
     print_status "Klone Git-Repository: $REPO_URL nach $OVERLEAF_INSTALL_PATH/."
     echo -e "${GRAY}" # Ausgabe von git clone einfärben
     if ! sudo git clone "$REPO_URL" "$OVERLEAF_INSTALL_PATH/."; then
-         echo -e "${NC}"
-         print_error "Fehler beim Klonen des Git-Repositories."
+        echo -e "${NC}"
+        print_error "Fehler beim Klonen des Git-Repositories."
     fi
     echo -e "${NC}" # Farben zurücksetzen
 
@@ -232,7 +232,7 @@ configure_overleaf() {
         # | dient als Trennzeichen für sed.
         run_sudo_command "sed -i 's|^#\\? *OVERLEAF_IMAGE_NAME=.*|OVERLEAF_IMAGE_NAME=\"$CUSTOM_IMAGE_URL\"|' \"$OVERLEAF_CONFIG_FILE\""
         if [ $? -ne 0 ]; then
-             print_error "Fehler beim Anpassen der Konfigurationsdatei."
+            print_error "Fehler beim Anpassen der Konfigurationsdatei."
         fi
         print_status "Konfiguration erfolgreich angepasst (OVERLEAF_IMAGE_NAME gesetzt)."
     else
@@ -251,11 +251,11 @@ download_manager_script() {
 
 # Erstellt eine Windows Desktop oder Startmenü Verknüpfung über PowerShell
 create_wsl_shortcut() {
-    local shortcut_file=$1          # Pfad zur .lnk Datei (Windows Pfad)
-    local wsl_command_args=$2       # Argumente für wsl.exe (z.B. "-e bash -c \"...\"")
-    local wsl_working_directory=$3  # Arbeitsverzeichnis für den WSL-Befehl (Linux Pfad)
-    local icon_file=$4              # Pfad zur .ico Datei (Windows Pfad)
-    local description=$5            # Beschreibung für die Verknüpfung (optional)
+    local shortcut_file=$1         # Pfad zur .lnk Datei (Windows Pfad)
+    local wsl_command_args=$2      # Argumente für wsl.exe (z.B. "-e bash -c \"...\"")
+    local wsl_working_directory=$3 # Arbeitsverzeichnis für den WSL-Befehl (Linux Pfad)
+    local icon_file=$4             # Pfad zur .ico Datei (Windows Pfad)
+    local description=$5           # Beschreibung für die Verknüpfung (optional)
 
     print_status "Erstelle Verknüpfung: $shortcut_file"
 
@@ -295,113 +295,104 @@ create_if_not_exists() {
 
 # Fragt nach und erstellt die Desktop-Verknüpfung
 ask_and_create_desktop_shortcut() {
-    #if [ -t 0 ] && [ -t 1 ]; then
-        if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung unter Windows erstellt werden?" 10 78; then
-            print_status "Bereite Erstellung der Desktop-Verknüpfung vor..."
+    if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung unter Windows erstellt werden?" 10 78; then
+        print_status "Bereite Erstellung der Desktop-Verknüpfung vor..."
 
-            # Pfade im Windows-Format ermitteln
-            local win_desktop_path
-            win_desktop_path=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
-            win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
-            local shortcut_file=$win_desktop_path\\Overleaf.lnk
-            if [ -z "$win_desktop_path" ]; then
-                print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
-            fi
-
-            local win_userprofile_path
-            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
-            win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
-            local win_icon_file=${win_userprofile_path}\\image.ico
-            if [ -z "$win_userprofile_path" ]; then
-                print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
-            fi
-
-            # Icon herunterladen (direkt nach Windows über PowerShell)
-            print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
-            powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
-
-
-            # Den WSL-Befehl vorbereiten, der von der Verknüpfung ausgeführt wird.
-            # Dieser Befehl wechselt in das Toolkit-Verzeichnis im WSL und führt
-            # das Manager-Skript mit sudo aus.
-            # Wichtig: Doppelte Anführungszeichen im bash -c String müssen escaped werden (\")
-            local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
-
-            # Desktop-Verknüpfung erstellen
-            create_wsl_shortcut \
-                "$shortcut_file" \
-                "$wsl_command_args" \
-                "$OVERLEAF_INSTALL_PATH" \
-                "$win_icon_file" \
-                "Startet/Verwaltet den Overleaf (ShareLaTeX) Server in WSL"
-
-            print_status "Desktop-Verknüpfung erfolgreich erstellt: $shortcut_file"
-
-            # Speichere den Pfad für die Deinstallation/Verwaltung
-            create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
-            run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
-            echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
-            echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
-
-        else
-            print_warning "Erstellung der Desktop-Verknüpfung wurde übersprungen."
+        # Pfade im Windows-Format ermitteln
+        local win_desktop_path
+        win_desktop_path=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
+        win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
+        local shortcut_file=$win_desktop_path\\Overleaf.lnk
+        if [ -z "$win_desktop_path" ]; then
+            print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
         fi
-    #else
-    #    print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung der Desktop-Verknüpfung übersprungen."
-    #fi
+
+        local win_userprofile_path
+        win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
+        win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
+        local win_icon_file=${win_userprofile_path}\\image.ico
+        if [ -z "$win_userprofile_path" ]; then
+            print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
+        fi
+
+        # Icon herunterladen (direkt nach Windows über PowerShell)
+        print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
+        powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
+
+        # Den WSL-Befehl vorbereiten, der von der Verknüpfung ausgeführt wird.
+        # Dieser Befehl wechselt in das Toolkit-Verzeichnis im WSL und führt
+        # das Manager-Skript mit sudo aus.
+        # Wichtig: Doppelte Anführungszeichen im bash -c String müssen escaped werden (\")
+        local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
+
+        # Desktop-Verknüpfung erstellen
+        create_wsl_shortcut \
+            "$shortcut_file" \
+            "$wsl_command_args" \
+            "$OVERLEAF_INSTALL_PATH" \
+            "$win_icon_file" \
+            "Startet/Verwaltet den Overleaf (ShareLaTeX) Server in WSL"
+
+        print_status "Desktop-Verknüpfung erfolgreich erstellt: $shortcut_file"
+
+        # Speichere den Pfad für die Deinstallation/Verwaltung
+        create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
+        run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
+        echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
+        echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
+
+    else
+        print_warning "Erstellung der Desktop-Verknüpfung wurde übersprungen."
+    fi
 }
 
 # Fragt nach und erstellt die Startmenü-Verknüpfung
 # Nimmt die bereits erstellten wsl_command_args und den icon_file Pfad entgegen
 ask_and_create_start_menu_shortcut() {
-    #if [ -t 0 ] && [ -t 1 ]; then
-        if whiptail --title "Overleaf Installation" --yesno "Soll ein Startmenü-Eintrag unter Windows angelegt werden?" 10 78; then
-            print_status "Bereite Erstellung des Startmenü-Eintrags vor..."
+    if whiptail --title "Overleaf Installation" --yesno "Soll ein Startmenü-Eintrag unter Windows angelegt werden?" 10 78; then
+        print_status "Bereite Erstellung des Startmenü-Eintrags vor..."
 
-            # Pfad im Windows-Format ermitteln
-            local win_startmenu_path
-            win_startmenu_path=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
-            win_startmenu_path=$(printf '%s' "$win_startmenu_path" | sed 's/\r//g')
-            local shortcut_file=${win_startmenu_path}\\Programs\\Overleaf.lnk # Ändere "Programs" falls gewünscht
-            if [ -z "$win_startmenu_path" ]; then
-                print_error "Konnte den Windows Startmenü Pfad nicht ermitteln."
-            fi
-            
-            local win_userprofile_path
-            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
-            win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
-            local win_icon_file=${win_userprofile_path}\\image.ico
-            if [ -z "$win_userprofile_path" ]; then
-                print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
-            fi
-
-            # Icon herunterladen (direkt nach Windows über PowerShell)
-            print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
-            powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
-
-            local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
-
-            # Startmenü-Verknüpfung erstellen
-            create_wsl_shortcut \
-                "$shortcut_file" \
-                "$wsl_command_args" \
-                "$OVERLEAF_INSTALL_PATH" \
-                "$win_icon_file" \
-                "Startet/Verwaltet den Overleaf (ShareLaTeX) Server in WSL"
-
-            print_status "Startmenü-Eintrag erfolgreich erstellt: $shortcut_file"
-
-            # Speichere den Pfad für die Deinstallation/Verwaltung
-            create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
-            run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
-            echo "export OVERLEAF_START_MENU_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
-
-        else
-            print_warning "Erstellung des Startmenü-Eintrags wurde übersprungen."
+        # Pfad im Windows-Format ermitteln
+        local win_startmenu_path
+        win_startmenu_path=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
+        win_startmenu_path=$(printf '%s' "$win_startmenu_path" | sed 's/\r//g')
+        local shortcut_file=${win_startmenu_path}\\Programs\\Overleaf.lnk # Ändere "Programs" falls gewünscht
+        if [ -z "$win_startmenu_path" ]; then
+            print_error "Konnte den Windows Startmenü Pfad nicht ermitteln."
         fi
-    #else
-    #   print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung des Startmenü-Eintrags übersprungen."
-    #fi
+
+        local win_userprofile_path
+        win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
+        win_userprofile_path=$(printf '%s' "$win_userprofile_path" | sed 's/\r//g')
+        local win_icon_file=${win_userprofile_path}\\image.ico
+        if [ -z "$win_userprofile_path" ]; then
+            print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
+        fi
+
+        # Icon herunterladen (direkt nach Windows über PowerShell)
+        print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
+        powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
+
+        local wsl_command_args="-e bash -c \"cd \\\"$OVERLEAF_INSTALL_PATH\\\" && sudo ./bin/overleaf_manager_script.sh\""
+
+        # Startmenü-Verknüpfung erstellen
+        create_wsl_shortcut \
+            "$shortcut_file" \
+            "$wsl_command_args" \
+            "$OVERLEAF_INSTALL_PATH" \
+            "$win_icon_file" \
+            "Startet/Verwaltet den Overleaf (ShareLaTeX) Server in WSL"
+
+        print_status "Startmenü-Eintrag erfolgreich erstellt: $shortcut_file"
+
+        # Speichere den Pfad für die Deinstallation/Verwaltung
+        create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
+        run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
+        echo "export OVERLEAF_START_MENU_PATH='$shortcut_file'" >>"$OVERLEAF_SHORTCUT_PATHS_FILE"
+
+    else
+        print_warning "Erstellung des Startmenü-Eintrags wurde übersprungen."
+    fi
 }
 
 # --- Hauptausführung des Skripts ---
@@ -409,9 +400,7 @@ ask_and_create_start_menu_shortcut() {
 print_status "Beginne Overleaf (ShareLaTeX) Installation Skript für WSL."
 
 # Zeige Willkommensnachricht
-#if [ -t 0 ] && [ -t 1 ]; then
-     whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
-#fi
+whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
 
 # Abhängigkeiten prüfen
 check_dependencies
