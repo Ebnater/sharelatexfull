@@ -297,7 +297,7 @@ create_wsl_shortcut() {
 
 # Fragt nach und erstellt die Desktop-Verknüpfung
 ask_and_create_desktop_shortcut() {
-    if [ -t 0 ] && [ -t 1 ]; then
+    #if [ -t 0 ] && [ -t 1 ]; then
         if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung unter Windows erstellt werden?" 10 78; then
             print_status "Bereite Erstellung der Desktop-Verknüpfung vor..."
 
@@ -350,9 +350,9 @@ ask_and_create_desktop_shortcut() {
         else
             print_status "Erstellung der Desktop-Verknüpfung wurde übersprungen."
         fi
-    else
-        print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung der Desktop-Verknüpfung übersprungen."
-    fi
+    #else
+    #    print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung der Desktop-Verknüpfung übersprungen."
+    #fi
 }
 
 # Fragt nach und erstellt die Startmenü-Verknüpfung
@@ -401,9 +401,9 @@ ask_and_create_start_menu_shortcut() {
 print_status "Beginne Overleaf (ShareLaTeX) Installation Skript für WSL."
 
 # Zeige Willkommensnachricht
-if [ -t 0 ] && [ -t 1 ]; then
+#if [ -t 0 ] && [ -t 1 ]; then
      whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
-fi
+#fi
 
 # Abhängigkeiten prüfen
 check_dependencies
