@@ -106,14 +106,11 @@ if [ ! -w "$LOCAL_PATH" ]; then
     $SUDO chown "$USER":"$USER" "$LOCAL_PATH"
 fi
 
-if [ ! -d "$LOCAL_PATH" ]; then
-    echo "Klonen des Git-Repositories..."
-    echo "${GRAY}"
-    git clone "$REPO_URL" "$LOCAL_PATH"
-    echo "${NC}"
-else
-    echo "Das Repository ist bereits geklont."
-fi
+
+echo "Klonen des Git-Repositories..."
+echo "${GRAY}"
+git clone "$REPO_URL" "$LOCAL_PATH"
+echo "${NC}"
 
 EXEC_BIN_PATH="$LOCAL_PATH/bin"
 
