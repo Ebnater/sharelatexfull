@@ -250,6 +250,13 @@ configure_overleaf() {
     fi
 }
 
+download_manager_script() {
+    print_status "Lade Manager-Skript herunter..."
+    # Das Skript wird im bin-Verzeichnis gespeichert
+    download_file "$MANAGER_SCRIPT_URL" "$OVERLEAF_MANAGER_SCRIPT_LOCAL"
+    run_sudo_command "chmod +x \"$OVERLEAF_MANAGER_SCRIPT_LOCAL\""
+}
+
 # Erstellt eine Windows Desktop oder Startmenü Verknüpfung über PowerShell
 create_wsl_shortcut() {
     local shortcut_file="$1"        # Pfad zur .lnk Datei (Windows Pfad)
@@ -313,19 +320,6 @@ ask_and_create_desktop_shortcut() {
             # Icon herunterladen (direkt nach Windows über PowerShell)
             print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
             run_powershell_command "Invoke-WebRequest -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
-
-
-            # Manager Skript herunterladen (ins WSL Toolkit bin Verzeichnis)
-            # Das Herunterladen des Manager-Skripts wurde im Originalskript hier platziert.
-            # Es ist sinnvoller, es vor der shortcut-Erstellung herunterzuladen.
-            if [ ! -f "$OVERLEAF_MANAGER_SCRIPT_LOCAL" ]; then
-                download_file "$MANAGER_SCRIPT_URL" "$OVERLEAF_MANAGER_SCRIPT_LOCAL"
-                # Stelle sicher, dass das Skript ausführbar ist
-                chmod +x "$OVERLEAF_MANAGER_SCRIPT_LOCAL"
-            else
-                 print_status "Manager Skript existiert bereits: $OVERLEAF_MANAGER_SCRIPT_LOCAL"
-                 chmod +x "$OVERLEAF_MANAGER_MANAGER_SCRIPT_LOCAL" # Sicherstellen, dass es ausführbar ist
-            fi
 
 
             # Den WSL-Befehl vorbereiten, der von der Verknüpfung ausgeführt wird.
@@ -423,6 +417,9 @@ clone_overleaf_toolkit
 
 # Overleaf initialisieren und konfigurieren
 configure_overleaf
+
+# Manager-Skript herunterladen
+download_manager_script
 
 # Desktop-Verknüpfung anbieten und erstellen (inkl. Icon und Manager Skript Download)
 ask_and_create_desktop_shortcut
