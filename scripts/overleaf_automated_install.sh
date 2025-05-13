@@ -69,7 +69,7 @@ fi
 
 # Git-Repository klonen
 REPO_URL="https://github.com/overleaf/toolkit.git"
-LOCAL_PATH=/opt/overleaf-toolkit
+LOCAL_PATH=/opt
 LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Klonen des Git-Repositories..."
