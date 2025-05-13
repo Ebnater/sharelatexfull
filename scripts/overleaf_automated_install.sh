@@ -5,18 +5,24 @@ MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/m
 ICON_LOCATION_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/image.ico
 
 # Colors
-RED='\033[0;31m'
-GRAY='\033[1;30m'
-NC='\033[0m'
+RED='\e[0;31m'
+GRAY='\e[1;30m'
+NC='\e[0m'
+
+# Überprüfen, ob das Skript ohne root-Rechten ausgeführt wird
+if [ "$(id -u)" -eq 0 ]; then
+    echo -e "${RED}Bitte führen Sie dieses Skript nicht als root aus.${NC}"
+    exit 1
+fi
 
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
 if ! type docker &> /dev/null; then
-    echo "Docker scheint nicht im PATH gefunden zu werden."
+    echo -e "Docker scheint nicht im PATH gefunden zu werden."
     # Versuche whiptail nur, wenn ein Terminal vorhanden ist
     if [ -t 0 ] && [ -t 1 ]; then
         if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert oder nicht im PATH. Soll es installiert werden?" 10 78; then
-            echo "Installiere Docker..."
+            echo -e "Installiere Docker..."
             echo -e "${GRAY}" # -e für die Interpretation von Escape-Sequenzen
             # Sicherstellen, dass sudo verfügbar ist oder das Skript als root läuft
             if command -v sudo &> /dev/null; then
@@ -69,16 +75,42 @@ fi
 
 # Git-Repository klonen
 REPO_URL="https://github.com/overleaf/toolkit.git"
-LOCAL_PATH=$(pwd)
+LOCAL_PATH=/opt
 LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
-if [ ! -d "$LOCAL_PATH" ]; then
-    echo "Klonen des Git-Repositories..."
-    echo "${GRAY}"
-    git clone "$REPO_URL" "$LOCAL_PATH"
-    echo "${NC}"
+# Hole sudo Berechtigungen
+if command -v sudo &> /dev/null; then
+    SUDO="sudo"
 else
-    echo "Das Repository ist bereits geklont."
+    echo -e "${RED} Fehler: sudo ist nicht verfügbar. Installation abgebrochen. ${NC}"
+    exit 1
 fi
+
+# Überprüfen, ob das Verzeichnis bereits existiert
+if [ -d "$LOCAL_PATH" ]; then
+    echo "Das Verzeichnis $LOCAL_PATH existiert bereits."
+    # Überprüfen, ob das Verzeichnis ein Git-Repository ist
+    if [ -d "$LOCAL_PATH/.git" ]; then
+        echo "Das Verzeichnis ist ein Git-Repository."
+    else
+        echo "Das Verzeichnis ist kein Git-Repository. Es wird gelöscht und neu geklont."
+        $SUDO rm -rf "$LOCAL_PATH"
+    fi
+fi
+# Erstelle das Verzeichnis, falls es nicht existiert
+if [ ! -d "$LOCAL_PATH" ]; then
+    echo -e "Erstelle das Verzeichnis $LOCAL_PATH..."
+    $SUDO mkdir -p "$LOCAL_PATH"
+fi
+# Übeprüfe, ob Berechtigungen vorhanden sind
+if [ ! -w "$LOCAL_PATH" ]; then
+    $SUDO chown "$USER":"$USER" "$LOCAL_PATH"
+fi
+
+
+echo "Klonen des Git-Repositories..."
+echo -e "${GRAY}"
+git clone "$REPO_URL" "$LOCAL_PATH/."
+echo -e "${NC}"
 
 EXEC_BIN_PATH="$LOCAL_PATH/bin"
 
@@ -100,30 +132,30 @@ fi
 if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung erstellt werden?" 8 78; then
     # Managerskript herunterladen
     echo "Lade den Manager-Skript herunter"
-    echo "${GRAY}"
+    echo -e "${GRAY}"
     wget -O "$EXEC_BIN_PATH/overleaf_manager_script.sh" "$MANAGER_SCRIPT_URL"
     chmod +x "$EXEC_BIN_PATH/overleaf_manager_script.sh"
-    echo "${NC}"
+    echo -e "${NC}"
 
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
-    SHORTCUT_PATH=$(printf '%s' "$SHORTCUT_PATH" | sed 's/\\/\\\\/g')
+    SHORTCUT_PATH=$(printf '%s' "$SHORTCUT_PATH" | sed 's/\r//g')
     SHORTCUT_PATH=$SHORTCUT_PATH\\Overleaf.lnk
 
     # Icon Pfad
     ICON_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile')")
-    ICON_PATH=$(printf '%s' "$ICON_PATH" | sed 's/\\/\\\\/g')
+    ICON_PATH=$(printf '%s' "$ICON_PATH" | sed 's/\r//g')
     ICON_PATH=$ICON_PATH\\image.ico
 
     # Desktop-Verknüpfung erstellen
-    TARGET_PATH="-d Ubuntu -e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
+    TARGET_PATH="-e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
     echo "Lade das Icon herunter..."
-    echo "${GRAY}"
+    echo -e "${GRAY}"
     powershell.exe -Command "wget -Uri $ICON_LOCATION_URL -OutFile $ICON_PATH"
-    echo "${NC}"
+    echo -e "${NC}"
 
     echo "Erstellen der Desktop-Verknüpfung..."
-    echo "${GRAY}"
+    echo -e "${GRAY}"
 
     powershell.exe -Command "
         \$WshShell = New-Object -ComObject WScript.Shell;
@@ -133,13 +165,13 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
         \$shortcut.Save();
         "
-    echo "${NC}"
+    echo -e "${NC}"
     echo "Verknüpfung auf dem Desktop erstellt."
 
     if whiptail --title "Overleaf Installation" --yesno "Soll auch ein Startmenü Eintrag angelegt werden?" 8 78; then
         # Startmenü Eintrag erstellen
         echo "Erstelle Startmenü Eintrag..."
-        echo "${GRAY}"
+        echo -e "${GRAY}"
         START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
         START_MENU_PATH=$(echo "$START_MENU_PATH" | sed 's/\r//g')
         START_MENU_PATH=$START_MENU_PATH\\Programs\\Overleaf.lnk
@@ -152,12 +184,12 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
             \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
             \$shortcut.Save();
             "
-        echo "${NC}"
+        echo -e "${NC}"
         echo "Startmenü Eintrag erstellt."
 
         # Lege die Variable in einer Datei ab
-        echo "export OVERLEAF_START_MENU_PATH=$START_MENU_PATH" >> "$EXEC_BIN_PATH/.shortcut_paths"
+        echo "export OVERLEAF_START_MENU_PATH='$START_MENU_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
     fi
     # Lege die Variable in einer Datei ab
-    echo "export OVERLEAF_SHORTCUT_PATH=$SHORTCUT_PATH" >> "$EXEC_BIN_PATH/.shortcut_paths"
+    echo "export OVERLEAF_SHORTCUT_PATH='$SHORTCUT_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
 fi
