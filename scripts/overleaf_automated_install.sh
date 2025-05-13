@@ -88,6 +88,9 @@ LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Erstelle das Verzeichnis $LOCAL_PATH..."
     $SUDO mkdir -p "$LOCAL_PATH"
+fi
+# Übeprüfe, ob Berechtigungen vorhanden sind
+if [ ! -w "$LOCAL_PATH" ]; then
     $SUDO chown "$USER":"$USER" "$LOCAL_PATH"
 fi
 
