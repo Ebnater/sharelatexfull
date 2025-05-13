@@ -295,6 +295,10 @@ create_if_not_exists() {
 
 # Fragt nach und erstellt die Desktop-Verknüpfung
 ask_and_create_desktop_shortcut() {
+    if ! [ -t 0 ] && [ -t 1 ]; then
+        print_warning "Kein interaktives Terminal erkannt. Desktop-Verknüpfung wird nicht erstellt."
+        return
+    fi
     if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung unter Windows erstellt werden?" 10 78; then
         print_status "Bereite Erstellung der Desktop-Verknüpfung vor..."
 
@@ -349,6 +353,10 @@ ask_and_create_desktop_shortcut() {
 # Fragt nach und erstellt die Startmenü-Verknüpfung
 # Nimmt die bereits erstellten wsl_command_args und den icon_file Pfad entgegen
 ask_and_create_start_menu_shortcut() {
+    if ! [ -t 0 ] && [ -t 1 ]; then
+        print_warning "Kein interaktives Terminal erkannt. Startmenü-Verknüpfung wird nicht erstellt."
+        return
+    fi
     if whiptail --title "Overleaf Installation" --yesno "Soll ein Startmenü-Eintrag unter Windows angelegt werden?" 10 78; then
         print_status "Bereite Erstellung des Startmenü-Eintrags vor..."
 
@@ -400,7 +408,13 @@ ask_and_create_start_menu_shortcut() {
 print_status "Beginne Overleaf (ShareLaTeX) Installation Skript für WSL."
 
 # Zeige Willkommensnachricht
-whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
+if [ -t 0 ] && [ -t 1 ]; then
+    whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
+else
+    print_warning "Es wurde kein interaktives Terminal erkannt. Wechsle zu Standardinstallation."
+    print_warning "Bitte beachten Sie, dass einige Funktionen (z.B. Desktop-Verknüpfung) nicht verfügbar sind."
+    print_warning "Wenn dieses Skript direkt mit stdin aufgerufen wird, werden alle interaktiven Abfragen übersprungen."
+fi
 
 # Abhängigkeiten prüfen
 check_dependencies
