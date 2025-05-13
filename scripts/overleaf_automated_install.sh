@@ -5,9 +5,9 @@ MANAGER_SCRIPT_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/m
 ICON_LOCATION_URL=https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/image.ico
 
 # Colors
-RED='\033[0;31m'
-GRAY='\033[1;30m'
-NC='\033[0m'
+RED='\e[0;31m'
+GRAY='\e[1;30m'
+NC='\e[0m'
 
 # Überprüfen, ob das Skript ohne root-Rechten ausgeführt wird
 if [ "$(id -u)" -eq 0 ]; then
@@ -18,11 +18,11 @@ fi
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
 if ! type docker &> /dev/null; then
-    echo "Docker scheint nicht im PATH gefunden zu werden."
+    echo -e "Docker scheint nicht im PATH gefunden zu werden."
     # Versuche whiptail nur, wenn ein Terminal vorhanden ist
     if [ -t 0 ] && [ -t 1 ]; then
         if whiptail --title "Docker Installation" --yesno "Docker ist nicht installiert oder nicht im PATH. Soll es installiert werden?" 10 78; then
-            echo "Installiere Docker..."
+            echo -e "Installiere Docker..."
             echo -e "${GRAY}" # -e für die Interpretation von Escape-Sequenzen
             # Sicherstellen, dass sudo verfügbar ist oder das Skript als root läuft
             if command -v sudo &> /dev/null; then
@@ -81,7 +81,8 @@ LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 if command -v sudo &> /dev/null; then
     SUDO="sudo"
 else
-    echo "Fehler: sudo ist nicht verfügbar. Installation abgebrochen."
+    echo -e "${RED}"
+    echo -e "Fehler: sudo ist nicht verfügbar. Installation abgebrochen."
     exit 1
 fi
 
@@ -98,7 +99,7 @@ if [ -d "$LOCAL_PATH" ]; then
 fi
 # Erstelle das Verzeichnis, falls es nicht existiert
 if [ ! -d "$LOCAL_PATH" ]; then
-    echo "Erstelle das Verzeichnis $LOCAL_PATH..."
+    echo -e "Erstelle das Verzeichnis $LOCAL_PATH..."
     $SUDO mkdir -p "$LOCAL_PATH"
 fi
 # Übeprüfe, ob Berechtigungen vorhanden sind
