@@ -349,7 +349,7 @@ ask_and_create_start_menu_shortcut() {
     local wsl_command_args="$1"
     local win_icon_file="$2"
 
-     if [ -t 0 ] && [ -t 1 ]; then
+    #if [ -t 0 ] && [ -t 1 ]; then
         if whiptail --title "Overleaf Installation" --yesno "Soll ein Startmenü-Eintrag unter Windows angelegt werden?" 10 78; then
             print_status "Bereite Erstellung des Startmenü-Eintrags vor..."
 
@@ -379,9 +379,9 @@ ask_and_create_start_menu_shortcut() {
         else
             print_status "Erstellung des Startmenü-Eintrags wurde übersprungen."
         fi
-     else
-        print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung des Startmenü-Eintrags übersprungen."
-     fi
+    #else
+    #   print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung des Startmenü-Eintrags übersprungen."
+    #fi
 }
 
 # --- Hauptausführung des Skripts ---
