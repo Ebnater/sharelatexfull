@@ -188,8 +188,8 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         echo "Startmenü Eintrag erstellt."
 
         # Lege die Variable in einer Datei ab
-        echo "export OVERLEAF_START_MENU_PATH=$START_MENU_PATH" >> "$EXEC_BIN_PATH/.shortcut_paths"
+        echo "export OVERLEAF_START_MENU_PATH='$START_MENU_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
     fi
     # Lege die Variable in einer Datei ab
-    echo "export OVERLEAF_SHORTCUT_PATH=$SHORTCUT_PATH" >> "$EXEC_BIN_PATH/.shortcut_paths"
+    echo "export OVERLEAF_SHORTCUT_PATH='$SHORTCUT_PATH'" >> "$EXEC_BIN_PATH/.shortcut_paths"
 fi
