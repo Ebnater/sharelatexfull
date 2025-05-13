@@ -76,7 +76,7 @@ download_file() {
     local destination="$2"
     print_status "Lade Datei herunter: $url nach $destination"
     echo -e "${GRAY}"
-    if ! wget -O "$destination" "$url"; then
+    if ! run_sudo_command 'wget -O "$destination" "$url"'; then
         echo -e "${NC}"
         print_error "Fehler beim Herunterladen von $url."
     fi
@@ -253,7 +253,7 @@ configure_overleaf() {
 download_manager_script() {
     print_status "Lade Manager-Skript herunter..."
     # Das Skript wird im bin-Verzeichnis gespeichert
-    run_sudo_command "download_file "$MANAGER_SCRIPT_URL" "$OVERLEAF_MANAGER_SCRIPT_LOCAL""
+    download_file "$MANAGER_SCRIPT_URL" "$OVERLEAF_MANAGER_SCRIPT_LOCAL"
     run_sudo_command "chmod +x \"$OVERLEAF_MANAGER_SCRIPT_LOCAL\""
 }
 
