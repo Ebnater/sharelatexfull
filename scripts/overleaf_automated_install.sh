@@ -83,18 +83,6 @@ download_file() {
     echo -e "${NC}"
 }
 
-# Führt einen PowerShell-Befehl aus und prüft auf Erfolg
-run_powershell_command() {
-    local cmd="$1"
-    print_status "Führe PowerShell Befehl aus: $cmd"
-    echo -e "${GRAY}"
-    if ! powershell.exe -Command "$cmd"; then
-        echo -e "${NC}"
-        print_error "Fehler bei der Ausführung des PowerShell Befehls: $cmd"
-    fi
-    echo -e "${NC}"
-}
-
 # --- Installationsfunktionen ---
 
 # Prüft die benötigten Systemabhängigkeiten
@@ -303,7 +291,7 @@ ask_and_create_desktop_shortcut() {
 
             # Pfade im Windows-Format ermitteln
             local win_desktop_path
-            win_desktop_path=$(run_powershell_command "[Environment]::GetFolderPath('Desktop')")
+            win_desktop_path=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
             win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
             if [ -z "$win_desktop_path" ]; then
                 print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
@@ -311,7 +299,7 @@ ask_and_create_desktop_shortcut() {
             local shortcut_file="${win_desktop_path}\\Overleaf.lnk"
 
             local win_userprofile_path
-            win_userprofile_path=$(run_powershell_command "[Environment]::GetFolderPath('UserProfile') | Write-Host")
+            win_userprofile_path=$(powershell.exe -Command "[Environment]::GetFolderPath('UserProfile') | Write-Host")
              win_userprofile_path=$(echo "$win_userprofile_path" | sed 's/\r//g; s/^[[:space:]]*//; s/[[:space:]]*$//')
             if [ -z "$win_userprofile_path" ]; then
                 print_error "Konnte den Windows Benutzerprofil Pfad nicht ermitteln."
@@ -320,7 +308,7 @@ ask_and_create_desktop_shortcut() {
 
             # Icon herunterladen (direkt nach Windows über PowerShell)
             print_status "Lade Icon für Verknüpfung herunter nach: $win_icon_file"
-            run_powershell_command "Invoke-WebRequest -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
+            powershell.exe -Command "wget -Uri \"$ICON_LOCATION_URL\" -OutFile \"$win_icon_file\""
 
 
             # Den WSL-Befehl vorbereiten, der von der Verknüpfung ausgeführt wird.
