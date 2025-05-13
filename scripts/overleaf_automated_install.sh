@@ -81,8 +81,7 @@ LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 if command -v sudo &> /dev/null; then
     SUDO="sudo"
 else
-    echo -e "${RED}"
-    echo -e "Fehler: sudo ist nicht verfügbar. Installation abgebrochen."
+    echo -e "${RED} Fehler: sudo ist nicht verfügbar. Installation abgebrochen. ${NC}"
     exit 1
 fi
 
@@ -109,9 +108,9 @@ fi
 
 
 echo "Klonen des Git-Repositories..."
-echo "${GRAY}"
+echo -e "${GRAY}"
 git clone "$REPO_URL" "$LOCAL_PATH/."
-echo "${NC}"
+echo -e "${NC}"
 
 EXEC_BIN_PATH="$LOCAL_PATH/bin"
 
@@ -133,10 +132,10 @@ fi
 if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpfung erstellt werden?" 8 78; then
     # Managerskript herunterladen
     echo "Lade den Manager-Skript herunter"
-    echo "${GRAY}"
+    echo -e "${GRAY}"
     wget -O "$EXEC_BIN_PATH/overleaf_manager_script.sh" "$MANAGER_SCRIPT_URL"
     chmod +x "$EXEC_BIN_PATH/overleaf_manager_script.sh"
-    echo "${NC}"
+    echo -e "${NC}"
 
     # Finde Desktop Pfad
     SHORTCUT_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')")
@@ -151,12 +150,12 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     # Desktop-Verknüpfung erstellen
     TARGET_PATH="-e bash -c \"cd $LOCAL_PATH && sudo ./bin/overleaf_manager_script.sh\""
     echo "Lade das Icon herunter..."
-    echo "${GRAY}"
+    echo -e "${GRAY}"
     powershell.exe -Command "wget -Uri $ICON_LOCATION_URL -OutFile $ICON_PATH"
-    echo "${NC}"
+    echo -e "${NC}"
 
     echo "Erstellen der Desktop-Verknüpfung..."
-    echo "${GRAY}"
+    echo -e "${GRAY}"
 
     powershell.exe -Command "
         \$WshShell = New-Object -ComObject WScript.Shell;
@@ -166,7 +165,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
         \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
         \$shortcut.Save();
         "
-    echo "${NC}"
+    echo -e "${NC}"
     echo "Verknüpfung auf dem Desktop erstellt."
 
     if whiptail --title "Overleaf Installation" --yesno "Soll auch ein Startmenü Eintrag angelegt werden?" 8 78; then
@@ -185,7 +184,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
             \$shortcut.TargetPath = \"C:\\Windows\\System32\\wsl.exe\";
             \$shortcut.Save();
             "
-        echo "${NC}"
+        echo -e "${NC}"
         echo "Startmenü Eintrag erstellt."
 
         # Lege die Variable in einer Datei ab
