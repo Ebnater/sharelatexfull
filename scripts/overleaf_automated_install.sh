@@ -63,7 +63,7 @@ command_exists() {
 # Führt einen Befehl mit sudo aus und prüft auf Erfolg
 run_sudo_command() {
     local cmd="$@"
-    local display_cmd=$(echo -e $cmd);
+    local display_cmd=$cmd
     print_status "Führe als root aus: $display_cmd"
     # Verwenden Sie eval, um die Befehlszeichenfolge korrekt zu interpretieren
     if ! eval "sudo $cmd"; then
