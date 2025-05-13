@@ -281,6 +281,16 @@ create_wsl_shortcut() {
 
 }
 
+create_if_not_exists() {
+    local file_path=$1
+    if [ ! -f "$file_path" ]; then
+        print_status "Erstelle Datei: $file_path"
+        run_sudo_command touch "$file_path"
+    else
+        print_status "Datei existiert bereits: $file_path"
+    fi
+}
+
 # Fragt nach und erstellt die Desktop-Verknüpfung
 ask_and_create_desktop_shortcut() {
     #if [ -t 0 ] && [ -t 1 ]; then
@@ -326,7 +336,7 @@ ask_and_create_desktop_shortcut() {
             print_status "Desktop-Verknüpfung erfolgreich erstellt: $shortcut_file"
 
             # Speichere den Pfad für die Deinstallation/Verwaltung
-            run_sudo_command "touch $OVERLEAF_SHORTCUT_PATHS_FILE"
+            create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
             run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
@@ -376,6 +386,8 @@ ask_and_create_start_menu_shortcut() {
             print_status "Startmenü-Eintrag erfolgreich erstellt: $shortcut_file"
 
             # Speichere den Pfad für die Deinstallation/Verwaltung
+            create_if_not_exists "$OVERLEAF_SHORTCUT_PATHS_FILE"
+            run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_START_MENU_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
 
         else
