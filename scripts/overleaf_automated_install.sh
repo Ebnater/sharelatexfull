@@ -9,6 +9,12 @@ RED='\033[0;31m'
 GRAY='\033[1;30m'
 NC='\033[0m'
 
+# Überprüfen, ob das Skript ohne root-Rechten ausgeführt wird
+if [ "$(id -u)" -eq 0 ]; then
+    echo -e "${RED}Bitte führen Sie dieses Skript nicht als root aus.${NC}"
+    exit 1
+fi
+
 whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf auf Ihrem System." 8 78
 # Überprüfen, ob Docker installiert ist
 if ! type docker &> /dev/null; then
@@ -71,6 +77,29 @@ fi
 REPO_URL="https://github.com/overleaf/toolkit.git"
 LOCAL_PATH=/opt
 LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
+# Überprüfen, ob das Verzeichnis bereits existiert
+if [ -d "$LOCAL_PATH" ]; then
+    echo "Das Verzeichnis $LOCAL_PATH existiert bereits."
+    # Überprüfen, ob das Verzeichnis ein Git-Repository ist
+    if [ -d "$LOCAL_PATH/.git" ]; then
+        echo "Das Verzeichnis ist ein Git-Repository."
+    else
+        echo "Das Verzeichnis ist kein Git-Repository. Es wird gelöscht und neu geklont."
+        rm -rf "$LOCAL_PATH"
+    fi
+fi
+# Überprüfen, ob Rechte zum Klonen vorhanden sind
+if [ ! -w "$LOCAL_PATH" ]; then
+    # Mache das Verzeichnis beschreibbar
+    echo "Das Verzeichnis $LOCAL_PATH ist nicht beschreibbar. Versuche, es beschreibbar zu machen..."
+    if sudo chmod -R 777 "$LOCAL_PATH"; then
+        echo "Das Verzeichnis $LOCAL_PATH ist jetzt beschreibbar."
+    else
+        echo "Fehler: Das Verzeichnis $LOCAL_PATH konnte nicht beschreibbar gemacht werden. Bitte überprüfen Sie die Berechtigungen."
+        exit 1
+    fi
+    exit 1
+fi
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Klonen des Git-Repositories..."
     echo "${GRAY}"
