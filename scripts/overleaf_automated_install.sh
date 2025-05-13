@@ -408,7 +408,13 @@ ask_and_create_start_menu_shortcut() {
 print_status "Beginne Overleaf (ShareLaTeX) Installation Skript für WSL."
 
 # Zeige Willkommensnachricht
-whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
+if [ -t 0 ] && [ -t 1 ]; then
+    whiptail --title "Overleaf Installation" --msgbox "Dieses Skript installiert Overleaf (ShareLaTeX) auf Ihrem System unter Verwendung von Docker in WSL." 10 78
+else
+    print_warning "Es wurde kein interaktives Terminal erkannt. Wechsle zu Standardinstallation."
+    print_warning "Bitte beachten Sie, dass einige Funktionen (z.B. Desktop-Verknüpfung) nicht verfügbar sind."
+    print_warning "Wenn dieses Skript direkt mit stdin aufgerufen wird, werden alle interaktiven Abfragen übersprungen."
+fi
 
 # Abhängigkeiten prüfen
 check_dependencies
