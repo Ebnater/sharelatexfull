@@ -76,6 +76,7 @@ fi
 # Git-Repository klonen
 REPO_URL="https://github.com/overleaf/toolkit.git"
 LOCAL_PATH=/opt
+LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 # Hole sudo Berechtigungen
 if command -v sudo &> /dev/null; then
     SUDO="sudo"
@@ -83,7 +84,6 @@ else
     echo "Fehler: sudo ist nicht verfügbar. Installation abgebrochen."
     exit 1
 fi
-LOCAL_PATH="$LOCAL_PATH/overleaf-toolkit"
 # Erstelle das Verzeichnis, falls es nicht existiert
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Erstelle das Verzeichnis $LOCAL_PATH..."
@@ -94,17 +94,6 @@ if [ ! -w "$LOCAL_PATH" ]; then
     $SUDO chown "$USER":"$USER" "$LOCAL_PATH"
 fi
 
-# Überprüfen, ob das Verzeichnis bereits existiert
-if [ -d "$LOCAL_PATH" ]; then
-    echo "Das Verzeichnis $LOCAL_PATH existiert bereits."
-    # Überprüfen, ob das Verzeichnis ein Git-Repository ist
-    if [ -d "$LOCAL_PATH/.git" ]; then
-        echo "Das Verzeichnis ist ein Git-Repository."
-    else
-        echo "Das Verzeichnis ist kein Git-Repository. Es wird gelöscht und neu geklont."
-        $SUDO rm -rf "$LOCAL_PATH"
-    fi
-fi
 if [ ! -d "$LOCAL_PATH" ]; then
     echo "Klonen des Git-Repositories..."
     echo "${GRAY}"
