@@ -171,7 +171,7 @@ if whiptail --title "Overleaf Installation" --yesno "Soll eine Desktop-Verknüpf
     if whiptail --title "Overleaf Installation" --yesno "Soll auch ein Startmenü Eintrag angelegt werden?" 8 78; then
         # Startmenü Eintrag erstellen
         echo "Erstelle Startmenü Eintrag..."
-        echo "${GRAY}"
+        echo -e "${GRAY}"
         START_MENU_PATH=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
         START_MENU_PATH=$(echo "$START_MENU_PATH" | sed 's/\r//g')
         START_MENU_PATH=$START_MENU_PATH\\Programs\\Overleaf.lnk
