@@ -335,7 +335,7 @@ ask_and_create_desktop_shortcut() {
             ask_and_create_start_menu_shortcut "$wsl_command_args" "$win_icon_file"
 
         else
-            print_status "Erstellung der Desktop-Verknüpfung wurde übersprungen."
+            print_warning "Erstellung der Desktop-Verknüpfung wurde übersprungen."
         fi
     #else
     #    print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung der Desktop-Verknüpfung übersprungen."
@@ -376,7 +376,7 @@ ask_and_create_start_menu_shortcut() {
             echo "export OVERLEAF_START_MENU_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
 
         else
-            print_status "Erstellung des Startmenü-Eintrags wurde übersprungen."
+            print_warning "Erstellung des Startmenü-Eintrags wurde übersprungen."
         fi
     #else
     #   print_warning "Kein interaktives Terminal erkannt. Abfrage zur Erstellung des Startmenü-Eintrags übersprungen."
