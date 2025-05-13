@@ -303,9 +303,8 @@ ask_and_create_desktop_shortcut() {
 
             # Pfade im Windows-Format ermitteln
             local win_desktop_path
-            win_desktop_path=$(run_powershell_command "[Environment]::GetFolderPath('Desktop') | Write-Host")
-            # powershell.exe Write-Host gibt saubere Ausgabe ohne CRLF, aber trimmen schadet nicht
-            win_desktop_path=$(echo "$win_desktop_path" | sed 's/\r//g; s/^[[:space:]]*//; s/[[:space:]]*$//')
+            win_desktop_path=$(run_powershell_command "[Environment]::GetFolderPath('Desktop')")
+            win_desktop_path=$(printf '%s' "$win_desktop_path" | sed 's/\r//g')
             if [ -z "$win_desktop_path" ]; then
                 print_error "Konnte den Windows Desktop Pfad nicht ermitteln."
             fi
