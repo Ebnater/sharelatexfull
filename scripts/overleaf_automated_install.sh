@@ -20,6 +20,7 @@
 CUSTOM_IMAGE_URL="git.serv.eserver.icu/ewbc/sharelatexfull"
 MANAGER_SCRIPT_URL="https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_manager_script.sh"
 ICON_LOCATION_URL="https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/image.ico"
+REPO_URL="https://git.serv.eserver.icu/ewbc/sharelatexfull.git"
 
 # Installationspfad für das Overleaf Toolkit im WSL Dateisystem
 OVERLEAF_INSTALL_PATH="/opt/overleaf-toolkit"
