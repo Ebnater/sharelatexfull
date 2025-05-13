@@ -63,8 +63,7 @@ command_exists() {
 # Führt einen Befehl mit sudo aus und prüft auf Erfolg
 run_sudo_command() {
     local cmd="$@"
-    local display_cmd=$cmd
-    print_status "Führe als root aus: $display_cmd"
+    print_status "Führe als root aus: $cmd"
     # Verwenden Sie eval, um die Befehlszeichenfolge korrekt zu interpretieren
     if ! eval "sudo $cmd"; then
         print_error "Fehler bei der Ausführung von: $cmd"
@@ -77,7 +76,7 @@ download_file() {
     local destination="$2"
     print_status "Lade Datei herunter: $url nach $destination"
     echo -e "${GRAY}"
-    if ! run_sudo_command 'wget -O "$destination" "$url"'; then
+    if ! run_sudo_command 'wget -O $destination $url'; then
         echo -e "${NC}"
         print_error "Fehler beim Herunterladen von $url."
     fi
