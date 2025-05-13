@@ -102,7 +102,7 @@ if [ -d "$LOCAL_PATH" ]; then
         echo "Das Verzeichnis ist ein Git-Repository."
     else
         echo "Das Verzeichnis ist kein Git-Repository. Es wird gelöscht und neu geklont."
-        rm -rf "$LOCAL_PATH"
+        $SUDO rm -rf "$LOCAL_PATH"
     fi
 fi
 if [ ! -d "$LOCAL_PATH" ]; then
