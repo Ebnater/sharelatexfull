@@ -223,7 +223,7 @@ clone_overleaf_toolkit() {
 
     # Das init Skript und andere Binaries ausführbar machen
     print_status "Setze Ausführungsrechte für Toolkit Binaries..."
-    run_sudo_command "chmod +x \"$OVERLEAF_BIN_PATH\"/*"
+    run_sudo_command "chmod +x \"$OVERLEAF_INSTALL_PATH\"/*"
 
     print_status "Overleaf Toolkit erfolgreich geklont/verwaltet."
 }
