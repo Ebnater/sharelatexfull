@@ -63,7 +63,8 @@ command_exists() {
 # Führt einen Befehl mit sudo aus und prüft auf Erfolg
 run_sudo_command() {
     local cmd="$@"
-    print_status "Führe als root aus: $cmd"
+    local display_cmd=$(echo -e $cmd);
+    print_status "Führe als root aus: $display_cmd"
     # Verwenden Sie eval, um die Befehlszeichenfolge korrekt zu interpretieren
     if ! eval "sudo $cmd"; then
         print_error "Fehler bei der Ausführung von: $cmd"
@@ -326,6 +327,8 @@ ask_and_create_desktop_shortcut() {
             print_status "Desktop-Verknüpfung erfolgreich erstellt: $shortcut_file"
 
             # Speichere den Pfad für die Deinstallation/Verwaltung
+            run_sudo_command "touch $OVERLEAF_SHORTCUT_PATHS_FILE"
+            run_sudo_command "chmod 777 $OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_SHORTCUT_PATH='$shortcut_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
             echo "export OVERLEAF_ICON_PATH='$win_icon_file'" >> "$OVERLEAF_SHORTCUT_PATHS_FILE"
 
