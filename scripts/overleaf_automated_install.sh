@@ -109,7 +109,7 @@ fi
 
 echo "Klonen des Git-Repositories..."
 echo "${GRAY}"
-git clone "$REPO_URL" "$LOCAL_PATH"
+git clone "$REPO_URL" "$LOCAL_PATH/."
 echo "${NC}"
 
 EXEC_BIN_PATH="$LOCAL_PATH/bin"
