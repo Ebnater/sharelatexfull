@@ -267,7 +267,7 @@ create_wsl_shortcut() {
     # Der PowerShell-Befehl selbst wird in einfachen Anführungszeichen übergeben,
     # aber die Bash-Variablen werden außerhalb eingefügt.
 
-    local ps_command="
+    powershell.exe -Command "
         \$WshShell = New-Object -ComObject WScript.Shell;
         \$shortcut = \$WshShell.CreateShortcut('$shortcut_file');
         \$shortcut.Arguments = '$wsl_command_args';
@@ -278,9 +278,7 @@ create_wsl_shortcut() {
         \$shortcut.Save();
         "
     # Entferne führende/abschließende Leerzeichen und leere Zeilen
-    ps_command=$(echo "$ps_command" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//;/^$/d')
 
-    run_powershell_command "$ps_command"
 }
 
 # Fragt nach und erstellt die Desktop-Verknüpfung
