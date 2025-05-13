@@ -355,13 +355,13 @@ ask_and_create_start_menu_shortcut() {
 
             # Pfad im Windows-Format ermitteln
             local win_startmenu_path
-            win_startmenu_path=$(run_powershell_command "[Environment]::GetFolderPath('StartMenu') | Write-Host")
-            win_startmenu_path=$(echo "$win_startmenu_path" | sed 's/\r//g; s/^[[:space:]]*//; s/[[:space:]]*$//')
-             if [ -z "$win_startmenu_path" ]; then
+            win_startmenu_path=$(powershell.exe -Command "[Environment]::GetFolderPath('StartMenu')")
+            win_startmenu_path=$(printf '%s' "$win_startmenu_path" | sed 's/\r//g')
+            local shortcut_file=${win_startmenu_path}\\Programs\\Overleaf.lnk # Ändere "Programs" falls gewünscht
+            if [ -z "$win_startmenu_path" ]; then
                 print_error "Konnte den Windows Startmenü Pfad nicht ermitteln."
             fi
             # Optional: Unterordner hinzufügen
-            local shortcut_file="${win_startmenu_path}\\Programs\\Overleaf.lnk" # Ändere "Programs" falls gewünscht
 
             # Startmenü-Verknüpfung erstellen
             create_wsl_shortcut \
