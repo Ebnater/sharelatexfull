@@ -47,7 +47,7 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 
 4. Go to http://127.0.0.1/launchpad on first run
 
-### Automatic Installation [experimental]
+### Automatic Installation
 
 ```bash
 curl -fsSL -o /tmp/overleaf_install_script.sh https://git.serv.eserver.icu/ewbc/sharelatexfull/raw/branch/main/scripts/overleaf_automated_install.sh && bash /tmp/overleaf_install_script.sh && rm /tmp/overleaf_install_script.sh
