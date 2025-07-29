@@ -87,6 +87,7 @@ do
             echo "Führe Stopp aus"
             ./bin/stop
             ./bin/docker-compose down
+            echo -e "${GRAY}"
             echo "Führe bin/up aus"
             ./bin/up -d
             echo -e "${NC}"
