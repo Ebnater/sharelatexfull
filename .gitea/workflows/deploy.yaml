@@ -2,11 +2,6 @@ name: Deploy Sharelatex Full
 run-name: ${{ gitea.actor }} is deploying ${{ vars.repository }}
 on:
   workflow_dispatch:
-    inputs:
-      sharelatex_version:
-        description: "The version of ShareLaTeX to deploy"
-        required: true
-        default: "latest"
   schedule:
     - cron: '@daily'
 
@@ -29,9 +24,39 @@ jobs:
         run: |
           echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
 
-  automatic-build-and-deploy:
+  is-build-needed:
     runs-on: ubuntu-latest
     needs: get-current-version
+    outputs:
+      BUILD_NEEDED: ${{ steps.export-var.outputs.BUILD_NEEDED }}
+    steps:
+      - name: Get current version from registry
+        run: |
+          # Login to registry to check existing tags
+          echo "${{ secrets.REGISTRY_PAT }}" | docker login ${{ vars.URL }} -u ${{ secrets.REGISTRY_USER }} --password-stdin
+          
+          # Try to get the latest tag from the registry
+          REGISTRY_VERSION=$(docker manifest inspect ${{ vars.URL }}/${{ vars.repository }}:${{ needs.get-current-version.outputs.VERSION }} > /dev/null 2>&1 && echo "${{ needs.get-current-version.outputs.VERSION }}" || echo "")
+          
+          echo "REGISTRY_VERSION=$REGISTRY_VERSION" >> $GITHUB_ENV
+          echo "Registry version: $REGISTRY_VERSION"
+          echo "Overleaf version: ${{ needs.get-current-version.outputs.VERSION }}"
+
+      - name: Check if build is needed
+        id: export-var
+        run: |
+          if [ -z "$REGISTRY_VERSION" ] || [ "$REGISTRY_VERSION" != "${{ needs.get-current-version.outputs.VERSION }}" ]; then
+            echo "BUILD_NEEDED=true" >> $GITHUB_OUTPUT
+            echo "Build needed: Registry version '$REGISTRY_VERSION' differs from Overleaf version '${{ needs.get-current-version.outputs.VERSION }}'"
+          else
+            echo "BUILD_NEEDED=false" >> $GITHUB_OUTPUT
+            echo "Build not needed: Registry version matches Overleaf version '${{ needs.get-current-version.outputs.VERSION }}'"
+          fi
+
+  automatic-build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: [get-current-version, is-build-needed]
+    if: needs.is-build-needed.outputs.BUILD_NEEDED == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
