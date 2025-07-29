@@ -47,13 +47,14 @@ do
     OPTION=$(whiptail --title "Overleaf Manager Script" --menu "Wählen Sie eine Aktion aus:" 15 50 5 \
     "1" "Starten" \
     "2" "Stoppen" \
-    "3" "Updaten" \
-    "4" "Shell" \
-    "5" "Frage den Doktor" \
-    "6" "Version wechseln" \
-    "7" "Konfiguration anpassen" \
-    "8" "Deinstallieren" \
-    "9" "Beenden" 3>&1 1>&2 2>&3)
+    "3" "Neustarten" \
+    "4" "Updaten" \
+    "5" "Shell" \
+    "6" "Frage den Doktor" \
+    "7" "Version wechseln" \
+    "8" "Konfiguration anpassen" \
+    "9" "Deinstallieren" \
+    "10" "Beenden" 3>&1 1>&2 2>&3)
 
     # Überprüfen, ob der Benutzer abgebrochen hat
     if [ $? -ne 0 ]; then
@@ -81,21 +82,31 @@ do
             echo -e "${NC}"
             ;;
         3)
+            echo "Starte neu..."
+            echo -e "${GRAY}"
+            echo "Führe Stopp aus"
+            ./bin/stop
+            ./bin/docker-compose down
+            echo "Führe bin/up aus"
+            ./bin/up -d
+            echo -e "${NC}"
+            ;;
+        4)
             echo "Starte bin/upgrade..."
             echo -e "${GRAY}"
             ./bin/upgrade
             echo -e "${NC}"
             ;;
-        4)
+        5)
             echo "Starte bin/shell..."
             ./bin/shell
             ;;
-        5)
+        6)
             echo "Starte bin/doctor..."
             DOCTOR_OUTPUT=$(./bin/doctor 2>&1) # Capture the output of ./bin/doctor
             whiptail --title "bin/doctor Output" --msgbox --scrolltext "$DOCTOR_OUTPUT" 20 70
             ;;
-        6)
+        7)
             if [ -f config/version ]; then
                 CURRENT_VERSION=$(cat config/version)
             else
@@ -111,7 +122,7 @@ do
                 whiptail --title "Abgebrochen" --msgbox "Die Aktion wurde abgebrochen." 10 60
             fi
             ;;
-        7)
+        8)
             if [ -f config/overleaf.rc ]; then
                 CONFIG_FILE_PATH=config/overleaf.rc
             else
@@ -122,7 +133,7 @@ do
             # Vorläfige Implementierung
             nano $CONFIG_FILE_PATH
             ;;
-        8)
+        9)
             if whiptail --title "DEINSTALLATION" --defaultno --yesno "Willst du Overleaf wirklich deinstallieren?" 8 78; then
                 if whiptail --title "DEINSTALLATION" --defaultno --yesno "Das ist die letzte Warnung! Willst du Overleaf wirklich deinstallieren? ALLE DATEN GEHEN VERLOREN!!" 11 78; then
                     echo "Entferne Shortcuts..."
@@ -149,7 +160,7 @@ do
                 fi
             fi
             ;;
-        9)
+        10)
             echo -e "${RED}"
             echo "Beenden..."
             exit 0
