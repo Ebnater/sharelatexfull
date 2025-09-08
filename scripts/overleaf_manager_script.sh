@@ -72,7 +72,7 @@ do
                 echo -e "${NC}" # Reset text color
             else
                 ./bin/up
-                echo "Update abgeschlossen. Drücken Sie Enter, um fortzufahren..."
+                echo "Docker Container gestoppt. Drücken Sie Enter, um fortzufahren..."
                 read
             fi
             ;;
