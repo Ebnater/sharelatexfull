@@ -72,6 +72,8 @@ do
                 echo -e "${NC}" # Reset text color
             else
                 ./bin/up
+                echo "Update abgeschlossen. Drücken Sie Enter, um fortzufahren..."
+                read
             fi
             ;;
         2)
@@ -97,6 +99,8 @@ do
             echo -e "${GRAY}"
             ./bin/upgrade
             echo -e "${NC}"
+            echo "Update abgeschlossen. Drücken Sie Enter, um fortzufahren..."
+            read
             ;;
         5)
             echo "Starte bin/shell..."
