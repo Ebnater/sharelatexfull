@@ -1,3 +1,9 @@
+> [!WARNING]
+> Upgrading from Version 5.4.5 to 6.0.1 requires you to migrate MongoDB from Version 6 to 8 and redis to version 7.4
+> Expect Migration issues
+>
+> Quick Fix: Backup all Projects and reinstall Overleaf
+
 # ShareLaTeX Docker Setup
 
 This repository contains a Dockerfile for setting up a ShareLaTeX environment with a full TeX Live installation and additional tools like Inkscape.
