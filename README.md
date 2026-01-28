@@ -19,7 +19,7 @@ This repository contains a Dockerfile for setting up a ShareLaTeX environment wi
 
 - Internet connection to download required packages.
 - WSL installed on your system. ([Install](https://learn.microsoft.com/de-de/windows/wsl/install))
-- Docker installed on your system (Docker Desktop or in WSL). ([Install](https://docs.docker.com/engine/install/ubuntu/))
+- Docker installed on your system (Docker Desktop or in WSL). This is optional. If Docker is not installed the automated Installer will attempt an installation. ([Install](https://docs.docker.com/engine/install/ubuntu/))
 
 ## Build from Source
 
