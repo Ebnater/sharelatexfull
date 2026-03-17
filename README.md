@@ -2,8 +2,10 @@
 > Upgrading from Version 5.4.5 to 6.0.1 requires you to migrate MongoDB from Version 6 to 8 and redis to version 7.4
 > Expect Migration issues
 >
+> If you want to migrate your Database you can do this in two migration steps:
+> [Migrate from Version 6 to 7](https://www.mongodb.com/docs/manual/release-notes/7.0-upgrade/) and [Migrate from Version 7 to 8](https://www.mongodb.com/docs/manual/release-notes/8.0-upgrade/)
+>
 > Quick Fix: Backup all Projects and reinstall Overleaf
-
 # ShareLaTeX Docker Setup
 
 This repository contains a Dockerfile for setting up a ShareLaTeX environment with a full TeX Live installation and additional tools like Inkscape.
